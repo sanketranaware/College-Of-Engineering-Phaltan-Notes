@@ -52,7 +52,7 @@ h2 {
 }
 
 .card {
-  background: #fff;
+  background: #f5b1b1;
   padding: 25px 35px;
   border-radius: 16px;
   box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
@@ -92,11 +92,11 @@ button:hover {
 
 a.card {
   background: #ffffff;
-  color: #333;
+  color: #414141;
 }
 
 a.card:hover {
-  background: #fff7ea;
+  background: #f6ab3b;
 }
 
 footer {
