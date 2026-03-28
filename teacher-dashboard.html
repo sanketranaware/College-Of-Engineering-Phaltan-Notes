@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Notes — Teacher Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+</head>
+
+<body>
+
+  <header>
+    <img src="logo.png" alt="College Logo" class="logo" draggable="false" />
+    <h1>College Of Engineering Phaltan Notes</h1>
+  </header>
+
+  <div class="upload-page">
+
+    <!-- Top bar -->
+    <div class="up-topbar">
+      <div class="up-topbar-left">
+        <h2>Upload Notes</h2>
+        <p id="welcome-sub">Fill in the details below to upload study material</p>
+      </div>
+      <button class="up-logout" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Card -->
+    <div class="upload-card" id="upload-card">
+
+      <div class="upload-card-header">
+        <div class="upload-card-icon">📤</div>
+        <div>
+          <h3>Note Upload Form</h3>
+          <p>All fields are required</p>
+        </div>
+      </div>
+
+      <!-- ── Success screen (hidden by default) ── -->
+      <div class="up-success" id="up-success">
+        <div class="up-success-icon">✅</div>
+        <h3>Notes Uploaded!</h3>
+        <p>Your file has been submitted successfully.<br>Students will be able to access it shortly.</p>
+        <button class="up-success-btn" onclick="resetForm()">+ Upload Another</button>
+      </div>
+
+      <!-- ── Form ── -->
+      <form id="upload-form" onsubmit="return handleUpload(event);" novalidate>
+
+        <!-- Section 1: Classification -->
+        <div class="form-section-label">Classification</div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Program <span class="req">*</span></label>
+            <select class="up-select" id="f-program" onchange="updateBranches()">
+              <option value="">Select Program</option>
+              <option value="degree">Degree</option>
+              <option value="diploma">Diploma</option>
+            </select>
+            <span class="field-error" id="err-program">Please select a program.</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Branch <span class="req">*</span></label>
+            <select class="up-select" id="f-branch" disabled>
+              <option value="">Select Branch</option>
+            </select>
+            <span class="field-error" id="err-branch">Please select a branch.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Year <span class="req">*</span></label>
+            <select class="up-select" id="f-year" onchange="updateSems()">
+              <option value="">Select Year</option>
+            </select>
+            <span class="field-error" id="err-year">Please select a year.</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Semester <span class="req">*</span></label>
+            <select class="up-select" id="f-sem" disabled>
+              <option value="">Select Semester</option>
+            </select>
+            <span class="field-error" id="err-sem">Please select a semester.</span>
+          </div>
+        </div>
+
+        <!-- Section 2: Subject details -->
+        <div class="form-section-label">Subject Details</div>
+
+        <div class="field-group">
+          <label class="field-label">Subject Name <span class="req">*</span></label>
+          <input type="text" class="up-input" id="f-subject" placeholder="e.g. Database Management System" />
+          <span class="field-error" id="err-subject">Please enter the subject name.</span>
+        </div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Unit Number <span class="req">*</span></label>
+            <select class="up-select" id="f-unit">
+              <option value="">Select Unit</option>
+              <option value="1">Unit 1</option>
+              <option value="2">Unit 2</option>
+              <option value="3">Unit 3</option>
+              <option value="4">Unit 4</option>
+              <option value="5">Unit 5</option>
+            </select>
+            <span class="field-error" id="err-unit">Please select a unit.</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Unit Name <span class="req">*</span></label>
+            <input type="text" class="up-input" id="f-unitname" placeholder="e.g. Introduction to DBMS" />
+            <span class="field-error" id="err-unitname">Please enter the unit name.</span>
+          </div>
+        </div>
+
+        <!-- Section 3: File -->
+        <div class="form-section-label">File</div>
+
+        <div class="field-group">
+          <label class="field-label">Upload File <span class="req">*</span></label>
+          <div class="file-drop" id="file-drop">
+            <input type="file" id="f-file" accept=".pdf,.doc,.docx,.ppt,.pptx" onchange="onFileChange(this)" />
+            <span class="file-drop-icon">📁</span>
+            <span class="file-drop-text">Click or drag & drop your file here</span>
+            <span class="file-drop-sub">Accepted: <span>PDF, DOC, DOCX, PPT, PPTX</span></span>
+          </div>
+          <div class="file-chosen" id="file-chosen">
+            <span>📄</span>
+            <span class="file-chosen-name" id="file-chosen-name"></span>
+            <span class="file-chosen-size" id="file-chosen-size"></span>
+            <button type="button" class="file-remove" onclick="removeFile()" title="Remove file">✕</button>
+          </div>
+          <span class="field-error" id="err-file">Please upload a file.</span>
+        </div>
+
+        <button type="submit" class="up-submit" id="up-submit">
+          <div class="up-spinner"></div>
+          <span class="up-btn-text">Upload Notes</span>
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+  <script type="module" src="scripts/teacher-dashboard.js"></script>
+
+
+</body>
+
+</html>

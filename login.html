@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — College of Engineering Phaltan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+
+
+</head>
+
+<body>
+
+  <header>
+    <img src="logo.png" alt="College Logo" class="logo" draggable="false" />
+    <h1>College Of Engineering Phaltan Notes</h1>
+  </header>
+
+  <div class="container">
+    <div class="login-card">
+
+      <h2>Login to College Account</h2>
+
+      <form class="login-form" onsubmit="return validateLogin();">
+
+        <input type="email" id="username" placeholder="Email address" required style="background: #f6f8fb;" />
+        <input type="password" id="password" placeholder="Password" required style="background: #f6f8fb;" />
+        
+
+        <div class="fp-link-row">
+          <a href="forgot-password.html" class="fp-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="btn-login" style="margin-top: 0;">Login</button>
+      </form>
+
+      <div class="register-row">
+        Don't have an account?
+        <a href="register.html" class="register-link">Register</a>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html" class="back">← Back to Home</a>
+  </footer>
+
+  <script type="module" src="scripts/login.js"></script>
+</body>
+
+</html>

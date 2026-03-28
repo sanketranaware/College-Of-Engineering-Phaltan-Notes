@@ -4,35 +4,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>College Of Engineering Phaltan Notes - Degree</title>
+  <title>College Of Engineering Phaltan
+  </title>
   <link rel="icon" type="image/png" href="logo.png">
   <meta name="google-site-verification" content="rzGqgBmAqQXXf8wkXTm8DSa0jkaX-dBPR6f1bM9ORzU" />
   <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="logo.png" type="image/x-icon">
 
-  
+
 </head>
 
 <body>
   <header>
+    <a class="teacher-login" href="login.html">Teachers Login</a>
     <h1>
-      <a target="_blank" href="https://www.coephaltan.edu.in/index.htm">
-        <img src="logo.png" alt="College Logo" class="logo">
+      <img src="logo.png" alt="College Logo" class="logo" draggable="false">
       </a>
-      College Of Engineering Phaltan Notes - Degree
+      College Of Engineering Phaltan Notes
     </h1>
   </header>
+  <div class="button-container">
+    <button id="degreeBtn" class="active">Degree</button>
+    <button id="diplomaBtn">Diploma</button>
+  </div>
   <p>Select Your Course</p>
 
-  <main class="container">
-    <a href="Computer/ComputerYear.html" class="card">Computer </a>
-    <a href="mechanical/mechanicalYear.html" class="card">Mechanical </a>
-    <a href="AIDS/AIDSYear.html" class="card">AIDS </a>
-    <a href="Entc/EntcYear.html" class="card">ENTC </a>
-    <a href="Civil/CivilYear.html" class="card">Civil</a>
-  </main>
-  <footer>
+  <main class="container-main">
+    <div id="degree-main" style="display:flex;">
+      <a href="Computer/ComputerYear.html" class="card">Computer</a>
+      <a href="mechanical/mechanicalYear.html" class="card">Mechanical</a>
+      <a href="AIDS/AIDSYear.html" class="card">AIDS</a>
+      <a href="Entc/EntcYear.html" class="card">ENTC</a>
+      <a href="Civil/CivilYear.html" class="card">Civil</a>
+    </div>
 
+    <div id="diploma-main" style="display:none;">
+      <a href="diploma/" class="card">Computer </a>
+      <a href="" class="card">Mechanical </a>
+      <a href="" class="card">ENTC </a>
+      <a href="" class="card">Civil</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-body">
+
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <img src="logo.png" alt="Logo" class="footer-logo-img">
+          <div>
+            <div class="footer-college-name">College of Engineering<br>Phaltan</div>
+            <span class="footer-college-sub">Est. Maharashtra, India</span>
+          </div>
+        </div>
+        <p class="footer-tagline">
+          Empowering students with accessible academic resources. Your one-stop portal for lecture notes across all
+          engineering disciplines.
+        </p>
+        <div class="footer-badges">
+          <span class="footer-badge-pill badge-aicte">AICTE Approved</span>
+          <span class="footer-badge-pill badge-dte">DTE Maharashtra</span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Courses</h4>
+
+        <div style="display:flex; gap:6px; margin-bottom:14px;">
+          <button onclick="showDegreeFooter()" class="course-btn active" id="degreeFooterBtn">Degree</button>
+          <button onclick="showDiplomaFooter()" class="course-btn" id="diplomaFooterBtn">Diploma</button>
+        </div>
+
+        <div id="degree" class="course-section" style="display:block;">
+          <ul>
+            <li><a href="Computer/ComputerYear.html">Computer Engineering</a></li>
+            <li><a href="mechanical/mechanicalYear.html">Mechanical Engineering.</a></li>
+            <li><a href="AIDS/AIDSYear.html">AIDS</a></li>
+            <li><a href="Entc/EntcYear.html">ENTC</a></li>
+            <li><a href="Civil/CivilYear.html">Civil Engineering</a></li>
+          </ul>
+        </div>
+
+        <div id="diploma" class="course-section" style="display:none;">
+          <ul>
+            <li><a href="">Computer Engineering</a></li>
+            <li><a href="">Mechanical Engineering</a></li>
+            <li><a href="">ENTC Engineering</a></li>
+            <li><a href="">Civil Engineering</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Portal</h4>
+        <ul>
+          <li><a href="login.html">Teachers Login</a></li>
+          <li><a href="syllabus.html">Syllabus</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item">
+          <div class="contact-icon">📍</div>
+          <div class="contact-text">
+            <strong>Address</strong>
+            Phaltan, Satara District,<br>Maharashtra – 415523
+          </div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="contact-icon">✉️</div>
+          <div class="contact-text">
+            <strong>Email</strong>
+            coeprincipal@yahoo.co.in
+          </div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="contact-icon">📞</div>
+          <div class="contact-text">
+            <strong>Phone</strong>
+            02166 221 539
+          </div>
+
+        </div>
+        <div><a target="_blank" href="https://www.coephaltan.edu.in/contact-us.htm" class="more-info">For More
+            Information</a></div>
+      </div>
+
+    </div>
+
+    <div class="footer-divider">
+      <hr>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">
+        © 2026 <span>College of Engineering Phaltan</span>. All rights reserved.
+      </p>
+      <div class="footer-bottom-right">
+        <a href="privacy-policy.html" class="footer-bottom-link">Privacy Policy</a>
+        <div class="footer-bottom-sep"></div>
+        <a href="terms.html" class="footer-bottom-link">Terms of Use</a>
+        <div class="footer-bottom-sep"></div>
+        <span class="footer-made-with">Made with <span class="heart">♥</span> for Students</span>
+      </div>
+    </div>
   </footer>
+
+  <script src="scripts/button.js"></script>
 </body>
 
 
