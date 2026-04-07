@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Notes — Teacher Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+  <style>
+    /* ── Drive instruction box ── */
+    .drive-instruction {
+      background: #fff8f0;
+      border: 1.5px solid rgba(246, 171, 59, 0.3);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .drive-instruction h4 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #c47e1a;
+      margin: 0 0 10px 0;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .drive-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .drive-steps li {
+      font-size: 0.79rem;
+      color: #666;
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .step-num {
+      width: 18px;
+      height: 18px;
+      background: #f6ab3b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .drive-steps li code {
+      background: #fff3dc;
+      border: 1px solid #fde5ae;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #c47e1a;
+      white-space: nowrap;
+    }
+
+    .drive-steps li strong {
+      color: #1c1c1e;
+    }
+
+    /* ── Open Drive button ── */
+    .drive-open-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 9px;
+      padding: 9px 16px;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #444;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-top: 4px;
+      box-shadow: none;
+    }
+
+    .drive-open-btn:hover {
+      border-color: #f6ab3b;
+      color: #f6ab3b;
+      background: #fff8f0;
+      transform: none;
+    }
+
+    .drive-open-btn img {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ── Link input wrapper ── */
+    .link-input-wrap {
+      position: relative;
+    }
+
+    .link-input-wrap .up-input {
+      padding-right: 44px;
+    }
+
+    .link-verify-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      font-weight: 700;
+      display: none;
+    }
+
+    .link-verify-icon.show {
+      display: block;
+    }
+
+    .link-verify-icon.valid {
+      color: #22c55e;
+    }
+
+    .link-verify-icon.invalid {
+      color: #f87171;
+    }
+
+    /* ── Link preview ── */
+    .link-preview {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 9px;
+      padding: 9px 13px;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #166534;
+      font-weight: 500;
+    }
+
+    .link-preview.show {
+      display: flex;
+    }
+
+    .link-preview a {
+      color: #16a34a;
+      text-decoration: underline;
+      font-size: 0.78rem;
+      word-break: break-all;
+    }
+
+    /* ── Warning box ── */
+    .public-warning {
+      background: #fff7ed;
+      border: 1.5px solid #fed7aa;
+      border-radius: 9px;
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      color: #9a3412;
+      margin-top: 0;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.65;
+    }
+
+    .public-warning .warn-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <img src="logo.png" alt="College Logo" class="logo" draggable="false" />
+    <h1>College Of Engineering Phaltan Notes</h1>
+  </header>
+
+  <div class="upload-page">
+
+    <div class="up-topbar">
+      <div class="up-topbar-left">
+        <h2>Upload Notes</h2>
+        <p id="welcome-sub">Fill in the details below to upload study material</p>
+      </div>
+      <button class="up-logout" id="logout-btn">Logout</button>
+    </div>
+
+    <div class="upload-card" id="upload-card">
+
+      <div class="upload-card-header">
+        <div class="upload-card-icon">📤</div>
+        <div>
+          <h3>Note Upload Form</h3>
+          <p>All fields are required</p>
+        </div>
+      </div>
+
+      <!-- Success screen (hidden) -->
+      <div class="up-success" id="up-success">
+        <div class="up-success-icon">✅</div>
+        <h3>Notes Saved!</h3>
+        <p>Your Drive link has been saved successfully.<br>Students will be able to access it shortly.</p>
+        <button class="up-success-btn" id="upload-another-btn">+ Upload Another</button>
+      </div>
+
+      <form id="upload-form" novalidate>
+
+        <div class="form-section-label">Classification</div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Program <span class="req">*</span></label>
+            <select class="up-select" id="f-program">
+              <option value="">Select Program</option>
+              <option value="degree">Degree</option>
+              <option value="diploma">Diploma</option>
+            </select>
+            <span class="field-error" id="err-program">Please select a program.</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Branch <span class="req">*</span></label>
+            <select class="up-select" id="f-branch" disabled>
+              <option value="">Select Branch</option>
+            </select>
+            <span class="field-error" id="err-branch">Please select a branch.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Year <span class="req">*</span></label>
+            <select class="up-select" id="f-year">
+              <option value="">Select Year</option>
+            </select>
+            <span class="field-error" id="err-year">Please select a year.</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Semester <span class="req">*</span></label>
+            <select class="up-select" id="f-sem" disabled>
+              <option value="">Select Semester</option>
+            </select>
+            <span class="field-error" id="err-sem">Please select a semester.</span>
+          </div>
+        </div>
+
+        <div class="form-section-label">Subject Details</div>
+
+        <div class="field-group">
+          <label class="field-label">Subject <span class="req">*</span></label>
+          <select class="up-select" id="f-subject" disabled>
+            <option value="">Select Subject</option>
+          </select>
+          <span class="field-error" id="err-subject">Please select a subject.</span>
+        </div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Unit Number <span class="req">*</span></label>
+            <select class="up-select" id="f-unit">
+              <option value="">Select Unit</option>
+              <option value="1">Unit 1</option>
+              <option value="2">Unit 2</option>
+              <option value="3">Unit 3</option>
+              <option value="4">Unit 4</option>
+              <option value="5">Unit 5</option>
+            </select>
+            <span class="field-error" id="err-unit">Please select a unit.</span>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Unit Name <span class="req">*</span></label>
+            <input type="text" class="up-input" id="f-unitname" placeholder="e.g. Introduction to DBMS" />
+            <span class="field-error" id="err-unitname">Please enter the unit name.</span>
+          </div>
+        </div>
+
+        <div class="form-section-label">Google Drive Link</div>
+
+        <!-- Instructions -->
+        <div class="drive-instruction">
+          <h4>📋 How to upload and share your file</h4>
+          <ol class="drive-steps">
+            <li>
+              <span class="step-num">1</span>
+              <span>Click <strong>"Open Google Drive"</strong> below. Sign in with your college Google account if
+                asked.</span>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <span>Click <strong>"+ New"</strong> → <strong>"File Upload"</strong> and select your PDF or notes
+                file.</span>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <span>Once uploaded, <strong>right-click</strong> the file → click <strong>"Share"</strong>.</span>
+            </li>
+            <li>
+              <span class="step-num">4</span>
+              <span>Under <strong>"General access"</strong>, change <code>Restricted</code> →
+                <code>Anyone with the link</code>.</span>
+            </li>
+            <li>
+              <span class="step-num">5</span>
+              <span>Set the role to <strong>Viewer</strong> (students can view, not edit).</span>
+            </li>
+            <li>
+              <span class="step-num">6</span>
+              <span>Click <strong>"Copy link"</strong> and paste it in the field below.</span>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Warning -->
+        <div class="public-warning">
+          <span class="warn-icon">⚠️</span>
+          <span>
+            You <strong>must</strong> set access to <strong>"Anyone with the link"</strong> before pasting.
+            If you skip this step, students will see an <strong>"Access Denied"</strong> error.
+          </span>
+        </div>
+
+        <!-- Open Drive button -->
+        <a class="drive-open-btn" href="https://drive.google.com/drive/my-drive" target="_blank">
+          <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png"
+            onerror="this.style.display='none'" alt="Drive icon" />
+          Open Google Drive
+        </a>
+
+        <!-- Drive link input -->
+        <div class="field-group" style="margin-top: 14px;">
+          <label class="field-label">Paste Drive Link <span class="req">*</span></label>
+          <div class="link-input-wrap">
+            <input type="url" class="up-input" id="f-drivelink" placeholder="https://drive.google.com/file/d/..." />
+            <span class="link-verify-icon" id="link-icon"></span>
+          </div>
+
+          <div class="link-preview" id="link-preview">
+            <span>🔗</span>
+            <div>
+              <div style="font-weight:600; margin-bottom:3px; font-size:0.8rem;">Link looks correct!</div>
+              <a id="link-preview-url" href="#" target="_blank">Click here to verify it opens →</a>
+            </div>
+          </div>
+
+          <span class="field-error" id="err-drivelink">Please paste a valid Google Drive link.</span>
+        </div>
+
+        <button type="submit" class="up-submit" id="up-submit">
+          <div class="up-spinner" id="up-spinner" style="display:none;"></div>
+          <span class="up-btn-text" id="up-btn-text">Save Notes</span>
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+  <script type="module" src="scripts/teacher-dashboard.js"></script>
+
+</body>
+
+</html>
