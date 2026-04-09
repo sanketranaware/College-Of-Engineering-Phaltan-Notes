@@ -4,383 +4,701 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upload Notes — Teacher Dashboard</title>
+  <title>Teacher Dashboard — College of Engineering Phaltan</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css">
-  <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="logo.png" type="image/x-icon" />
   <style>
-    /* ── Drive instruction box ── */
-    .drive-instruction {
-      background: #fff8f0;
-      border: 1.5px solid rgba(246, 171, 59, 0.3);
-      border-radius: 12px;
-      padding: 16px 18px;
-      margin-bottom: 14px;
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange:       #f6ab3b;
+      --orange-dark:  #e09520;
+      --orange-light: #fff8ee;
+      --orange-border:#fde5ae;
+      --green:        #22c55e;
+      --green-light:  #dcfce7;
+      --red:          #ef4444;
+      --red-light:    #fee2e2;
+      --blue:         #3b82f6;
+      --blue-light:   #eff6ff;
+      --bg:           #f6f8fb;
+      --card:         #ffffff;
+      --text:         #1c1c1e;
+      --text-sub:     #6b7280;
+      --border:       #e5e7eb;
+      --shadow:       0 4px 16px rgba(0,0,0,0.08);
     }
 
-    .drive-instruction h4 {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #c47e1a;
-      margin: 0 0 10px 0;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .drive-steps {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .drive-steps li {
-      font-size: 0.79rem;
-      color: #666;
-      line-height: 1.6;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .step-num {
-      width: 18px;
-      height: 18px;
-      background: #f6ab3b;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.62rem;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .drive-steps li code {
-      background: #fff3dc;
-      border: 1px solid #fde5ae;
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-family: monospace;
-      font-size: 0.78rem;
-      color: #c47e1a;
-      white-space: nowrap;
-    }
-
-    .drive-steps li strong {
-      color: #1c1c1e;
-    }
-
-    /* ── Open Drive button ── */
-    .drive-open-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #fff;
-      border: 1.5px solid #e0e0e0;
-      border-radius: 9px;
-      padding: 9px 16px;
+    body {
       font-family: "Poppins", sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #444;
-      cursor: pointer;
-      text-decoration: none;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--orange);
+      color: white;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(246,171,59,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-left img { width: 36px; height: 36px; object-fit: contain; border-radius: 8px; background: white; padding: 3px; }
+    .header-title { font-size: 1rem; font-weight: 700; }
+    .header-badge {
+      background: rgba(255,255,255,0.25);
+      font-size: 0.68rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.4);
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .teacher-name { font-size: 0.82rem; font-weight: 500; opacity: 0.9; }
+    #logout-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      padding: 7px 16px; border-radius: 8px;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+    #logout-btn:hover { background: rgba(255,255,255,0.35); }
+
+    /* ── Auth gate ── */
+    .auth-gate {
+      min-height: calc(100vh - 64px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .auth-box {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 420px; width: 100%;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .auth-box .icon { font-size: 3rem; margin-bottom: 16px; }
+    .auth-box h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .auth-box p { color: var(--text-sub); font-size: 0.88rem; margin-bottom: 24px; }
+    .auth-box a {
+      display: inline-block;
+      background: var(--orange); color: white;
+      padding: 12px 28px; border-radius: 10px;
+      font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .auth-box a:hover { background: var(--orange-dark); transform: translateY(-2px); }
+
+    /* ── Main layout ── */
+    .dashboard-wrap {
+      max-width: 820px;
+      margin: 36px auto;
+      padding: 0 20px 60px;
+    }
+
+    /* ── Section title ── */
+    .section-title {
+      font-size: 1.3rem; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: 0.82rem; color: var(--text-sub);
+      margin-bottom: 24px;
+    }
+
+    /* ── Upload card ── */
+    .upload-card {
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .upload-card-header {
+      background: linear-gradient(135deg, var(--orange), #f59e0b);
+      color: white;
+      padding: 22px 26px;
+    }
+    .upload-card-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .upload-card-header p { font-size: 0.8rem; opacity: 0.88; margin-top: 3px; }
+    .upload-card-body { padding: 26px; }
+
+    /* ── Form ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 580px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label {
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--text-sub); letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    select, input[type="text"], input[type="number"], input[type="url"] {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.92rem;
+      color: var(--text);
+      background: var(--bg);
       transition: all 0.2s;
-      margin-top: 4px;
-      box-shadow: none;
+      width: 100%;
     }
-
-    .drive-open-btn:hover {
-      border-color: #f6ab3b;
-      color: #f6ab3b;
-      background: #fff8f0;
-      transform: none;
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--orange);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(246,171,59,0.12);
     }
-
-    .drive-open-btn img {
-      width: 18px;
-      height: 18px;
+    select:disabled, input:disabled {
+      opacity: 0.55; cursor: not-allowed;
     }
-
-    /* ── Link input wrapper ── */
-    .link-input-wrap {
+    .select-loading {
       position: relative;
     }
-
-    .link-input-wrap .up-input {
-      padding-right: 44px;
-    }
-
-    .link-verify-icon {
+    .select-loading::after {
+      content: "";
       position: absolute;
-      right: 14px;
-      top: 50%;
+      right: 12px; top: 50%;
       transform: translateY(-50%);
-      font-size: 1rem;
-      font-weight: 700;
-      display: none;
+      width: 14px; height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
     }
+    @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
 
-    .link-verify-icon.show {
-      display: block;
-    }
-
-    .link-verify-icon.valid {
-      color: #22c55e;
-    }
-
-    .link-verify-icon.invalid {
-      color: #f87171;
-    }
-
-    /* ── Link preview ── */
-    .link-preview {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      background: #f0fdf4;
-      border: 1.5px solid #bbf7d0;
-      border-radius: 9px;
-      padding: 9px 13px;
+    /* ── Submit btn ── */
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background: var(--orange);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer;
       margin-top: 8px;
-      font-size: 0.8rem;
-      color: #166534;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover:not(:disabled) {
+      background: var(--orange-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(246,171,59,0.35);
+    }
+    .btn-submit:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* ── Alert ── */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
       font-weight: 500;
+      margin-top: 14px;
+      display: none;
+      align-items: center; gap: 10px;
+    }
+    .alert.show { display: flex; }
+    .alert-success { background: var(--green-light); color: #166534; border: 1px solid #86efac; }
+    .alert-error   { background: var(--red-light);   color: #991b1b; border: 1px solid #fca5a5; }
+    .alert-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+    /* ── My uploads ── */
+    .my-uploads-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .my-uploads-header h3 { font-size: 1rem; font-weight: 700; }
+    .badge {
+      background: var(--orange);
+      color: white;
+      font-size: 0.68rem; font-weight: 700;
+      padding: 3px 9px; border-radius: 20px;
     }
 
-    .link-preview.show {
-      display: flex;
+    .note-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .note-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+    }
+    .note-item-left { flex: 1; min-width: 0; }
+    .note-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .note-meta { font-size: 0.75rem; color: var(--text-sub); margin-top: 3px; }
+    .note-link-btn {
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid #bfdbfe;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.78rem; font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .note-link-btn:hover { background: var(--blue); color: white; }
+
+    .empty-uploads {
+      text-align: center; padding: 30px 20px;
+      color: var(--text-sub); font-size: 0.88rem;
+    }
+    .empty-uploads .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+    /* ── Spinner overlay ── */
+    .spinner-row {
+      text-align: center; padding: 20px; color: var(--text-sub);
+      font-size: 0.85rem;
+    }
+    .inline-spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
     }
 
-    .link-preview a {
-      color: #16a34a;
-      text-decoration: underline;
-      font-size: 0.78rem;
-      word-break: break-all;
-    }
-
-    /* ── Warning box ── */
-    .public-warning {
-      background: #fff7ed;
-      border: 1.5px solid #fed7aa;
-      border-radius: 9px;
+    /* ── Info strip ── */
+    .info-strip {
+      background: var(--orange-light);
+      border: 1px solid var(--orange-border);
+      border-radius: 10px;
       padding: 10px 14px;
-      font-size: 0.78rem;
-      color: #9a3412;
-      margin-top: 0;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.65;
-    }
-
-    .public-warning .warn-icon {
-      font-size: 1rem;
-      flex-shrink: 0;
-      margin-top: 1px;
+      font-size: 0.8rem;
+      color: #7c4f0a;
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px;
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <img src="logo.png" alt="College Logo" class="logo" draggable="false" />
-    <h1>College Of Engineering Phaltan Notes</h1>
-  </header>
-
-  <div class="upload-page">
-
-    <div class="up-topbar">
-      <div class="up-topbar-left">
-        <h2>Upload Notes</h2>
-        <p id="welcome-sub">Fill in the details below to upload study material</p>
-      </div>
-      <button class="up-logout" id="logout-btn">Logout</button>
+<header>
+  <div class="header-left">
+    <img src="logo.png" alt="Logo" onerror="this.style.display='none'" />
+    <div>
+      <div class="header-title">Teacher Dashboard</div>
     </div>
+    <span class="header-badge">Teacher</span>
+  </div>
+  <div class="header-right">
+    <span class="teacher-name" id="teacher-email-display"></span>
+    <button id="logout-btn" onclick="doLogout()">Logout</button>
+  </div>
+</header>
 
-    <div class="upload-card" id="upload-card">
+<!-- Auth gate (shown while loading / not logged in) -->
+<div class="auth-gate" id="auth-gate">
+  <div class="auth-box">
+    <div class="icon">🔐</div>
+    <h2>Login Required</h2>
+    <p>Please sign in with your teacher account to access the dashboard and upload notes.</p>
+    <a href="login.html">Go to Login →</a>
+  </div>
+</div>
 
-      <div class="upload-card-header">
-        <div class="upload-card-icon">📤</div>
-        <div>
-          <h3>Note Upload Form</h3>
-          <p>All fields are required</p>
-        </div>
+<!-- Main dashboard (shown after auth) -->
+<div class="dashboard-wrap" id="dashboard" style="display:none;">
+
+  <div class="section-title">Upload Notes</div>
+  <div class="section-sub">Fill in all fields below to add a note for your students.</div>
+
+  <div class="upload-card">
+    <div class="upload-card-header">
+      <h3>📤 New Note Upload</h3>
+      <p>All fields are required. Use a public Google Drive sharing link.</p>
+    </div>
+    <div class="upload-card-body">
+
+      <div class="info-strip" id="loading-strip" style="display:none;">
+        <span class="inline-spinner"></span> Loading branches and subjects from admin config…
       </div>
 
-      <!-- Success screen (hidden) -->
-      <div class="up-success" id="up-success">
-        <div class="up-success-icon">✅</div>
-        <h3>Notes Saved!</h3>
-        <p>Your Drive link has been saved successfully.<br>Students will be able to access it shortly.</p>
-        <button class="up-success-btn" id="upload-another-btn">+ Upload Another</button>
-      </div>
-
-      <form id="upload-form" novalidate>
-
-        <div class="form-section-label">Classification</div>
-
-        <div class="form-row">
-          <div class="field-group">
-            <label class="field-label">Program <span class="req">*</span></label>
-            <select class="up-select" id="f-program">
-              <option value="">Select Program</option>
-              <option value="degree">Degree</option>
-              <option value="diploma">Diploma</option>
-            </select>
-            <span class="field-error" id="err-program">Please select a program.</span>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Branch <span class="req">*</span></label>
-            <select class="up-select" id="f-branch" disabled>
-              <option value="">Select Branch</option>
-            </select>
-            <span class="field-error" id="err-branch">Please select a branch.</span>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="field-group">
-            <label class="field-label">Year <span class="req">*</span></label>
-            <select class="up-select" id="f-year">
-              <option value="">Select Year</option>
-            </select>
-            <span class="field-error" id="err-year">Please select a year.</span>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Semester <span class="req">*</span></label>
-            <select class="up-select" id="f-sem" disabled>
-              <option value="">Select Semester</option>
-            </select>
-            <span class="field-error" id="err-sem">Please select a semester.</span>
-          </div>
-        </div>
-
-        <div class="form-section-label">Subject Details</div>
-
-        <div class="field-group">
-          <label class="field-label">Subject <span class="req">*</span></label>
-          <select class="up-select" id="f-subject" disabled>
-            <option value="">Select Subject</option>
+      <div class="form-grid">
+        <!-- Program -->
+        <div class="form-group">
+          <label>Program</label>
+          <select id="f-program" onchange="onProgramChange()">
+            <option value="">— Select Program —</option>
+            <option value="degree">Degree</option>
+            <option value="diploma">Diploma</option>
           </select>
-          <span class="field-error" id="err-subject">Please select a subject.</span>
         </div>
 
-        <div class="form-row">
-          <div class="field-group">
-            <label class="field-label">Unit Number <span class="req">*</span></label>
-            <select class="up-select" id="f-unit">
-              <option value="">Select Unit</option>
-              <option value="1">Unit 1</option>
-              <option value="2">Unit 2</option>
-              <option value="3">Unit 3</option>
-              <option value="4">Unit 4</option>
-              <option value="5">Unit 5</option>
-            </select>
-            <span class="field-error" id="err-unit">Please select a unit.</span>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Unit Name <span class="req">*</span></label>
-            <input type="text" class="up-input" id="f-unitname" placeholder="e.g. Introduction to DBMS" />
-            <span class="field-error" id="err-unitname">Please enter the unit name.</span>
-          </div>
+        <!-- Branch (dynamic) -->
+        <div class="form-group" id="wrap-branch">
+          <label>Branch</label>
+          <select id="f-branch" disabled>
+            <option value="">— Select Program first —</option>
+          </select>
         </div>
 
-        <div class="form-section-label">Google Drive Link</div>
-
-        <!-- Instructions -->
-        <div class="drive-instruction">
-          <h4>📋 How to upload and share your file</h4>
-          <ol class="drive-steps">
-            <li>
-              <span class="step-num">1</span>
-              <span>Click <strong>"Open Google Drive"</strong> below. Sign in with your college Google account if
-                asked.</span>
-            </li>
-            <li>
-              <span class="step-num">2</span>
-              <span>Click <strong>"+ New"</strong> → <strong>"File Upload"</strong> and select your PDF or notes
-                file.</span>
-            </li>
-            <li>
-              <span class="step-num">3</span>
-              <span>Once uploaded, <strong>right-click</strong> the file → click <strong>"Share"</strong>.</span>
-            </li>
-            <li>
-              <span class="step-num">4</span>
-              <span>Under <strong>"General access"</strong>, change <code>Restricted</code> →
-                <code>Anyone with the link</code>.</span>
-            </li>
-            <li>
-              <span class="step-num">5</span>
-              <span>Set the role to <strong>Viewer</strong> (students can view, not edit).</span>
-            </li>
-            <li>
-              <span class="step-num">6</span>
-              <span>Click <strong>"Copy link"</strong> and paste it in the field below.</span>
-            </li>
-          </ol>
+        <!-- Year -->
+        <div class="form-group">
+          <label>Year</label>
+          <select id="f-year" onchange="onYearChange()" disabled>
+            <option value="">— Select Program first —</option>
+          </select>
         </div>
 
-        <!-- Warning -->
-        <div class="public-warning">
-          <span class="warn-icon">⚠️</span>
-          <span>
-            You <strong>must</strong> set access to <strong>"Anyone with the link"</strong> before pasting.
-            If you skip this step, students will see an <strong>"Access Denied"</strong> error.
-          </span>
+        <!-- Semester (dynamic from year) -->
+        <div class="form-group">
+          <label>Semester</label>
+          <select id="f-semester" onchange="onSemesterChange()" disabled>
+            <option value="">— Select Year first —</option>
+          </select>
         </div>
 
-        <!-- Open Drive button -->
-        <a class="drive-open-btn" href="https://drive.google.com/drive/my-drive" target="_blank">
-          <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png"
-            onerror="this.style.display='none'" alt="Drive icon" />
-          Open Google Drive
-        </a>
-
-        <!-- Drive link input -->
-        <div class="field-group" style="margin-top: 14px;">
-          <label class="field-label">Paste Drive Link <span class="req">*</span></label>
-          <div class="link-input-wrap">
-            <input type="url" class="up-input" id="f-drivelink" placeholder="https://drive.google.com/file/d/..." />
-            <span class="link-verify-icon" id="link-icon"></span>
-          </div>
-
-          <div class="link-preview" id="link-preview">
-            <span>🔗</span>
-            <div>
-              <div style="font-weight:600; margin-bottom:3px; font-size:0.8rem;">Link looks correct!</div>
-              <a id="link-preview-url" href="#" target="_blank">Click here to verify it opens →</a>
-            </div>
-          </div>
-
-          <span class="field-error" id="err-drivelink">Please paste a valid Google Drive link.</span>
+        <!-- Subject (dynamic) -->
+        <div class="form-group full">
+          <label>Subject</label>
+          <select id="f-subject" disabled>
+            <option value="">— Select Semester first —</option>
+          </select>
         </div>
 
-        <button type="submit" class="up-submit" id="up-submit">
-          <div class="up-spinner" id="up-spinner" style="display:none;"></div>
-          <span class="up-btn-text" id="up-btn-text">Save Notes</span>
-        </button>
+        <!-- Unit number -->
+        <div class="form-group">
+          <label>Unit Number</label>
+          <input type="number" id="f-unit-num" placeholder="e.g. 1" min="1" max="10" />
+        </div>
 
-      </form>
+        <!-- Unit name -->
+        <div class="form-group">
+          <label>Unit Name</label>
+          <input type="text" id="f-unit-name" placeholder="e.g. Introduction to Arrays" />
+        </div>
+
+        <!-- Note title -->
+        <div class="form-group full">
+          <label>Note Title</label>
+          <input type="text" id="f-title" placeholder="e.g. DS Unit 1 - Linked Lists (Full Notes)" />
+        </div>
+
+        <!-- Drive link -->
+        <div class="form-group full">
+          <label>Google Drive Link</label>
+          <input type="url" id="f-drive" placeholder="https://drive.google.com/file/d/..." />
+        </div>
+      </div>
+
+      <button class="btn-submit" id="submit-btn" onclick="submitNote()">
+        📤 Upload Note
+      </button>
+
+      <div class="alert alert-success" id="alert-success">
+        <span class="alert-icon">✅</span>
+        <span id="alert-success-msg">Note uploaded successfully!</span>
+      </div>
+      <div class="alert alert-error" id="alert-error">
+        <span class="alert-icon">❌</span>
+        <span id="alert-error-msg">Something went wrong. Please try again.</span>
+      </div>
 
     </div>
   </div>
 
-  <script type="module" src="scripts/teacher-dashboard.js"></script>
+  <hr class="divider" />
+
+  <!-- My Uploads -->
+  <div class="my-uploads-header">
+    <h3>My Uploads</h3>
+    <span class="badge" id="my-uploads-badge">0</span>
+  </div>
+  <div id="my-uploads-list">
+    <div class="spinner-row"><span class="inline-spinner"></span> Loading your notes…</div>
+  </div>
+
+</div><!-- /dashboard-wrap -->
+
+<script type="module">
+  import { auth, db } from "./scripts/firebase.js";
+  import {
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+  import {
+    doc, getDoc, collection,
+    addDoc, query, where, getDocs,
+    orderBy, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+  // ── State ──────────────────────────────────────────────────
+  let currentUser  = null;
+  let adminConfig  = { branches: {}, subjects: {} };
+  let myNotes      = [];
+
+  const yearToSemesters = {
+    "Year 1": ["Semester 1", "Semester 2"],
+    "Year 2": ["Semester 3", "Semester 4"],
+    "Year 3": ["Semester 5", "Semester 6"],
+    "Year 4": ["Semester 7", "Semester 8"],
+  };
+  const diplomaYears = ["Year 1", "Year 2"];
+  const degreeYears  = ["Year 1", "Year 2", "Year 3", "Year 4"];
+
+  // ── DOM helpers ─────────────────────────────────────────────
+  const $  = id => document.getElementById(id);
+  function setOptions(selectEl, options, placeholder) {
+    selectEl.innerHTML = `<option value="">${placeholder}</option>` +
+      options.map(o => `<option value="${o}">${o}</option>`).join("");
+    selectEl.disabled = false;
+  }
+  function resetSelect(selectEl, placeholder) {
+    selectEl.innerHTML = `<option value="">${placeholder}</option>`;
+    selectEl.disabled = true;
+  }
+  function showAlert(type, msg) {
+    $("alert-success").classList.remove("show");
+    $("alert-error").classList.remove("show");
+    if (type === "success") {
+      $("alert-success-msg").textContent = msg;
+      $("alert-success").classList.add("show");
+    } else {
+      $("alert-error-msg").textContent = msg;
+      $("alert-error").classList.add("show");
+    }
+    setTimeout(() => {
+      $("alert-success").classList.remove("show");
+      $("alert-error").classList.remove("show");
+    }, 5000);
+  }
+
+  // ── Load admin config from Firestore ────────────────────────
+  async function loadAdminConfig() {
+    $("loading-strip").style.display = "flex";
+    try {
+      const snap = await getDoc(doc(db, "admin_config", "data"));
+      if (snap.exists()) {
+        const data = snap.data();
+        adminConfig.branches = data.branches || {};
+        adminConfig.subjects  = data.subjects  || {};
+      }
+    } catch (e) {
+      console.warn("Could not load admin config:", e.message);
+    } finally {
+      $("loading-strip").style.display = "none";
+    }
+  }
+
+  // ── Cascade selects ─────────────────────────────────────────
+  window.onProgramChange = function() {
+    const prog = $("f-program").value;
+    resetSelect($("f-branch"),   "— Select Branch —");
+    resetSelect($("f-year"),     "— Select Year —");
+    resetSelect($("f-semester"), "— Select Year first —");
+    resetSelect($("f-subject"),  "— Select Semester first —");
+
+    if (!prog) return;
+
+    // Branches
+    const branches = adminConfig.branches[prog] || [];
+    if (branches.length) {
+      setOptions($("f-branch"), branches, "— Select Branch —");
+    } else {
+      resetSelect($("f-branch"), "No branches found");
+    }
+
+    // Years
+    const years = prog === "degree" ? degreeYears : diplomaYears;
+    setOptions($("f-year"), years, "— Select Year —");
+  };
+
+  window.onYearChange = function() {
+    const year = $("f-year").value;
+    resetSelect($("f-semester"), "— Select Year first —");
+    resetSelect($("f-subject"),  "— Select Semester first —");
+    if (!year) return;
+    const sems = yearToSemesters[year] || [];
+    setOptions($("f-semester"), sems, "— Select Semester —");
+  };
+
+  window.onSemesterChange = function() {
+    const prog = $("f-program").value;
+    const sem  = $("f-semester").value;
+    resetSelect($("f-subject"), "— Select Semester first —");
+    if (!prog || !sem) return;
+
+    const subjects = (adminConfig.subjects[prog] || {})[sem] || [];
+    if (subjects.length) {
+      setOptions($("f-subject"), subjects, "— Select Subject —");
+    } else {
+      resetSelect($("f-subject"), "No subjects for this semester");
+    }
+  };
+
+  // ── Submit note ─────────────────────────────────────────────
+  window.submitNote = async function() {
+    const program   = $("f-program").value;
+    const branch    = $("f-branch").value;
+    const year      = $("f-year").value;
+    const semester  = $("f-semester").value;
+    const subject   = $("f-subject").value;
+    const unitNum   = $("f-unit-num").value.trim();
+    const unitName  = $("f-unit-name").value.trim();
+    const title     = $("f-title").value.trim();
+    const driveLink = $("f-drive").value.trim();
+
+    if (!program || !branch || !year || !semester || !subject || !unitNum || !unitName || !title || !driveLink) {
+      showAlert("error", "Please fill in all fields before uploading.");
+      return;
+    }
+    if (!driveLink.startsWith("http")) {
+      showAlert("error", "Please enter a valid Google Drive link starting with https://");
+      return;
+    }
+
+    const btn = $("submit-btn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="inline-spinner"></span> Uploading…';
+
+    try {
+      const noteData = {
+        program,
+        branch,
+        year,
+        semester,
+        subject,
+        unitNumber:  parseInt(unitNum),
+        unitName,
+        title,
+        driveLink,
+        uploadedBy:  currentUser.email,
+        uploadedAt:  serverTimestamp()
+      };
+
+      await addDoc(collection(db, "notes"), noteData);
+      showAlert("success", `Note "${title}" uploaded successfully!`);
+
+      // Reset form (keep program/branch for convenience)
+      $("f-unit-num").value  = "";
+      $("f-unit-name").value = "";
+      $("f-title").value     = "";
+      $("f-drive").value     = "";
+
+      // Refresh my uploads
+      await loadMyNotes();
+
+    } catch (e) {
+      console.error(e);
+      showAlert("error", "Upload failed: " + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = "📤 Upload Note";
+    }
+  };
+
+  // ── My uploads ──────────────────────────────────────────────
+  async function loadMyNotes() {
+    const listEl = $("my-uploads-list");
+    listEl.innerHTML = `<div class="spinner-row"><span class="inline-spinner"></span> Loading your notes…</div>`;
+    try {
+      const q = query(
+        collection(db, "notes"),
+        where("uploadedBy", "==", currentUser.email),
+        orderBy("uploadedAt", "desc")
+      );
+      const snap = await getDocs(q);
+      myNotes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderMyNotes();
+    } catch (e) {
+      // orderBy needs a composite index — fall back to unordered query
+      try {
+        const q2 = query(collection(db, "notes"), where("uploadedBy", "==", currentUser.email));
+        const snap2 = await getDocs(q2);
+        myNotes = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderMyNotes();
+      } catch (e2) {
+        listEl.innerHTML = `<div class="empty-uploads"><div class="empty-icon">⚠️</div>Could not load notes: ${e2.message}</div>`;
+      }
+    }
+  }
+
+  function renderMyNotes() {
+    const listEl = $("my-uploads-list");
+    $("my-uploads-badge").textContent = myNotes.length;
+
+    if (!myNotes.length) {
+      listEl.innerHTML = `
+        <div class="empty-uploads">
+          <div class="empty-icon">📭</div>
+          You haven't uploaded any notes yet.
+        </div>`;
+      return;
+    }
+
+    listEl.innerHTML = `<div class="note-list">` +
+      myNotes.map(n => `
+        <div class="note-item">
+          <div class="note-item-left">
+            <div class="note-title">${n.title || "Untitled"}</div>
+            <div class="note-meta">
+              ${n.program ? n.program.charAt(0).toUpperCase() + n.program.slice(1) : ""} ·
+              ${n.branch || ""} · ${n.semester || ""} · ${n.subject || ""} ·
+              Unit ${n.unitNumber || ""}
+            </div>
+          </div>
+          ${n.driveLink
+            ? `<a href="${n.driveLink}" target="_blank" rel="noopener" class="note-link-btn">Open ↗</a>`
+            : `<span style="font-size:0.78rem;color:var(--text-sub);">No link</span>`}
+        </div>
+      `).join("") +
+    `</div>`;
+  }
+
+  // ── Logout ──────────────────────────────────────────────────
+  window.doLogout = async function() {
+    try { await signOut(auth); } catch (_) {}
+    window.location.href = "login.html";
+  };
+
+  // ── Auth listener ────────────────────────────────────────────
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      $("teacher-email-display").textContent = user.email;
+      $("auth-gate").style.display    = "none";
+      $("dashboard").style.display    = "block";
+      await loadAdminConfig();
+      await loadMyNotes();
+    } else {
+      currentUser = null;
+      $("auth-gate").style.display    = "flex";
+      $("dashboard").style.display    = "none";
+      $("teacher-email-display").textContent = "";
+    }
+  });
+</script>
 
 </body>
-
 </html>

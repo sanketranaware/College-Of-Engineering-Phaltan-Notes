@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes — College Of Engineering Phaltan</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .breadcrumb {
+            text-align: center;
+            padding: 15px 20px;
+            background: #fff;
+            font-size: 0.95rem;
+            color: #666;
+            border-bottom: 1px solid #eee;
+        }
+
+        .breadcrumb a {
+            color: #f6ab3b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            margin: 0 5px;
+        }
+
+        .subject-header {
+            background: #fff;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .subject-header h2 {
+            color: #333;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .subject-header p {
+            color: #666;
+            margin: 10px 0 0 0;
+            font-size: 0.95rem;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #f6ab3b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .units-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .unit-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .unit-header {
+            background: linear-gradient(135deg, #f6ab3b, #f59e0b);
+            color: white;
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .unit-header:hover {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+        }
+
+        .unit-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .unit-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .unit-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .unit-content {
+            padding: 0;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .unit-content.collapsed {
+            max-height: 0;
+            padding: 0;
+        }
+
+        .note-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .note-item:hover {
+            background: #f9fafb;
+        }
+
+        .note-item:last-child {
+            border-bottom: none;
+        }
+
+        .note-info {
+            flex: 1;
+        }
+
+        .note-info strong {
+            display: block;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .note-info small {
+            color: #999;
+            display: block;
+            margin-top: 4px;
+            font-size: 0.85rem;
+        }
+
+        .note-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .note-link:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-text {
+            font-size: 1.1rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a class="teacher-login" href="login.html">Teachers Login</a>
+        <h1>
+            <img src="logo.png" alt="College Logo" class="logo" draggable="false">
+            College Of Engineering Phaltan Notes
+        </h1>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> >
+        <a href="#" onclick="goBack('courses')"><span id="program-name">Program</span></a> >
+        <a href="#" onclick="goBack('years')"><span id="branch-name">Branch</span></a> >
+        <a href="#" onclick="goBack('semesters')"><span id="year-name">Year</span></a> >
+        <a href="#" onclick="goBack('subjects')"><span id="semester-name">Semester</span></a> >
+        <span id="subject-name">Subject</span>
+    </div>
+
+    <div class="subject-header">
+        <h2 id="subject-title">Loading...</h2>
+        <p id="subject-meta">Notes and units</p>
+    </div>
+
+    <div id="loading" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading notes...</p>
+    </div>
+
+    <div id="error" class="error-message"></div>
+
+    <div class="units-container" id="units-container">
+        <!-- Units and notes will be loaded here -->
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-body">
+            <div class="footer-brand">
+                <div class="footer-logo-row">
+                    <img src="logo.png" alt="Logo" class="footer-logo-img">
+                    <div>
+                        <div class="footer-college-name">College of Engineering<br>Phaltan</div>
+                        <span class="footer-college-sub">Est. Maharashtra, India</span>
+                    </div>
+                </div>
+                <p class="footer-tagline">
+                    Empowering students with accessible academic resources. Your one-stop portal for lecture notes
+                    across all
+                    engineering disciplines.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Portal</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Teachers Login</a></li>
+                    <li><a href="syllabus.html">Syllabus</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <div class="footer-contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-text">
+                        <strong>Address</strong>
+                        Phaltan, Satara District,<br>Maharashtra – 415523
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <hr>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-copyright">
+                © 2026 <span>College of Engineering Phaltan</span>. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getNotesBySubject } from "./scripts/firebase-db.js";
+
+        const container = document.getElementById("units-container");
+        const loading = document.getElementById("loading");
+        const error = document.getElementById("error");
+        const subjectTitleEl = document.getElementById("subject-title");
+        const subjectMetaEl = document.getElementById("subject-meta");
+
+        // Get params from URL
+        const params = new URLSearchParams(window.location.search);
+        const program = params.get("program") || "degree";
+        const branch = params.get("branch") || "Branch";
+        const year = params.get("year") || "Year";
+        const semester = params.get("semester") || "Semester";
+        const subject = params.get("subject") || "Subject";
+
+        document.getElementById("program-name").textContent = program === "degree" ? "Degree" : "Diploma";
+        document.getElementById("branch-name").textContent = branch;
+        document.getElementById("year-name").textContent = year;
+        document.getElementById("semester-name").textContent = semester;
+        document.getElementById("subject-name").textContent = subject;
+        subjectTitleEl.textContent = subject;
+        subjectMetaEl.textContent = `${branch} • ${semester}`;
+
+        window.goBack = function (page) {
+            if (page === "subjects") {
+                window.location.href = `subjects.html?program=${program}&branch=${encodeURIComponent(branch)}&year=${encodeURIComponent(year)}&semester=${encodeURIComponent(semester)}`;
+            } else if (page === "semesters") {
+                window.location.href = `semesters.html?program=${program}&branch=${encodeURIComponent(branch)}&year=${encodeURIComponent(year)}`;
+            } else if (page === "years") {
+                window.location.href = `years.html?program=${program}&branch=${encodeURIComponent(branch)}`;
+            } else if (page === "courses") {
+                window.location.href = `courses.html?program=${program}`;
+            }
+        };
+
+        function toggleUnit(unitId) {
+            const content = document.getElementById(`unit-content-${unitId}`);
+            const toggle = document.getElementById(`unit-toggle-${unitId}`);
+            content.classList.toggle("collapsed");
+            toggle.classList.toggle("collapsed");
+        }
+
+        window.toggleUnit = toggleUnit;
+
+        async function loadNotes() {
+            try {
+                loading.style.display = "block";
+                const notes = await getNotesBySubject(program, branch, year, subject);
+
+                if (notes.length === 0) {
+                    container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">—</div>
+              <div class="empty-state-text">No notes uploaded yet</div>
+              <p style="color: #ccc; margin-top: 10px; font-size: 0.9rem;">Check back soon for more notes!</p>
+            </div>
+          `;
+                    return;
+                }
+
+                // Group notes by unit number
+                const unitMap = {};
+                notes.forEach(note => {
+                    const unitNum = note.unitNumber || 0;
+                    if (!unitMap[unitNum]) {
+                        unitMap[unitNum] = [];
+                    }
+                    unitMap[unitNum].push(note);
+                });
+
+                // Render units
+                const unitIds = Object.keys(unitMap).sort((a, b) => parseInt(a) - parseInt(b));
+                container.innerHTML = unitIds.map((unitId, idx) => {
+                    const unitNotes = unitMap[unitId];
+                    const isFirst = idx === 0;
+                    return `
+            <div class="unit-card">
+              <div class="unit-header" onclick="window.toggleUnit('unit-${unitId}')">
+                <h3>Unit ${unitId}: ${unitNotes[0]?.unitName || "Untitled"}</h3>
+                <span class="unit-toggle" id="unit-toggle-unit-${unitId}">▶</span>
+              </div>
+              <div class="unit-content ${!isFirst ? "collapsed" : ""}" id="unit-content-unit-${unitId}">
+                ${unitNotes.map(note => `
+                  <div class="note-item">
+                    <div class="note-info">
+                      <strong>${note.title || "Note"}</strong>
+                      <small>Uploaded by ${note.uploadedBy || "Unknown"}</small>
+                    </div>
+                    ${note.driveLink ? `<a href="${note.driveLink}" target="_blank" rel="noopener" class="note-link">Open</a>` : '<span style="color: #ccc; font-size: 0.9rem;">Pending</span>'}
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          `;
+                }).join("");
+
+            } catch (err) {
+                console.error("Error loading notes:", err);
+                error.style.display = "block";
+                error.textContent = "Error loading notes. Please refresh the page.";
+            } finally {
+                loading.style.display = "none";
+            }
+        }
+
+        loadNotes();
+    </script>
+</body>
+
+</html>

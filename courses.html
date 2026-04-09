@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Branch — College Of Engineering Phaltan Notes</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .breadcrumb {
+            text-align: center;
+            padding: 15px 20px;
+            background: #fff;
+            font-size: 0.95rem;
+            color: #666;
+            border-bottom: 1px solid #eee;
+        }
+
+        .breadcrumb a {
+            color: #f6ab3b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #f6ab3b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #f6ab3b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a class="teacher-login" href="login.html">Teachers Login</a>
+        <h1>
+            <img src="logo.png" alt="College Logo" class="logo" draggable="false">
+            College Of Engineering Phaltan Notes
+        </h1>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> > <span id="program-name">Loading...</span>
+    </div>
+
+    <p style="text-align: center; margin-top: 20px;">Select Your Branch</p>
+
+    <div id="loading" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading branches...</p>
+    </div>
+
+    <div id="error" class="error-message"></div>
+
+    <main class="container" id="branches-container">
+        <!-- Branches will be loaded here -->
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-body">
+            <div class="footer-brand">
+                <div class="footer-logo-row">
+                    <img src="logo.png" alt="Logo" class="footer-logo-img">
+                    <div>
+                        <div class="footer-college-name">College of Engineering<br>Phaltan</div>
+                        <span class="footer-college-sub">Est. Maharashtra, India</span>
+                    </div>
+                </div>
+                <p class="footer-tagline">
+                    Empowering students with accessible academic resources. Your one-stop portal for lecture notes
+                    across all
+                    engineering disciplines.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Portal</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Teachers Login</a></li>
+                    <li><a href="syllabus.html">Syllabus</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <div class="footer-contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-text">
+                        <strong>Address</strong>
+                        Phaltan, Satara District,<br>Maharashtra – 415523
+                    </div>
+                </div>
+                <div class="footer-contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <div class="contact-text">
+                        <strong>Email</strong>
+                        coeprincipal@yahoo.co.in
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <hr>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-copyright">
+                © 2026 <span>College of Engineering Phaltan</span>. All rights reserved.
+            </p>
+            <div class="footer-bottom-right">
+                <a href="privacy-policy.html" class="footer-bottom-link">Privacy Policy</a>
+                <div class="footer-bottom-sep"></div>
+                <a href="terms.html" class="footer-bottom-link">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getBranches } from "./scripts/firebase-db.js";
+
+        const container = document.getElementById("branches-container");
+        const loading = document.getElementById("loading");
+        const error = document.getElementById("error");
+        const programNameEl = document.getElementById("program-name");
+
+        // Get program from URL
+        const params = new URLSearchParams(window.location.search);
+        const program = params.get("program") || "degree";
+        const programLabel = program === "degree" ? "Degree" : "Diploma";
+        programNameEl.textContent = programLabel;
+
+        async function loadBranches() {
+            try {
+                loading.style.display = "block";
+                const branches = await getBranches(program);
+
+                if (branches.length === 0) {
+                    error.style.display = "block";
+                    error.textContent = "No branches available. Please try again later.";
+                    return;
+                }
+
+                container.innerHTML = branches.map(branch => `
+          <a href="years.html?program=${program}&branch=${encodeURIComponent(branch)}" class="card card-link">
+            <strong>${branch}</strong>
+            <span class="badge">Click to view years</span>
+          </a>
+        `).join("");
+
+            } catch (err) {
+                console.error("Error loading branches:", err);
+                error.style.display = "block";
+                error.textContent = "Error loading branches. Please refresh the page.";
+            } finally {
+                loading.style.display = "none";
+            }
+        }
+
+        loadBranches();
+    </script>
+</body>
+
+</html>

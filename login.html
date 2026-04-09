@@ -9,7 +9,126 @@
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="logo.png" type="image/x-icon">
 
+  <style>
+    /* ── Role toggle pill ── */
+    .role-toggle {
+      display: flex;
+      background: #f6f8fb;
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 22px;
+    }
 
+    .role-btn {
+      flex: 1;
+      padding: 9px 0;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      font-family: "Poppins", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: none;
+      margin: 0;
+    }
+
+    .role-btn:hover {
+      color: #555;
+      transform: none;
+      background: transparent;
+    }
+
+    .role-btn.active {
+      background: #ffffff;
+      color: #1c1c1e;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+    }
+
+    .role-btn.active.admin-active {
+      color: #c47e1a;
+    }
+
+    /* ── Admin mode — card accent ── */
+    .login-card.admin-mode {
+      border-top: 3px solid #f6ab3b;
+    }
+
+    /* ── Admin badge shown in card when admin mode ── */
+    .admin-only {
+      display: none;
+    }
+    .admin-mode .admin-only {
+      display: block;
+    }
+    .admin-mode .teacher-only {
+      display: none;
+    }
+
+    /* Small security notice for admin mode */
+    .security-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: #fff8f0;
+      border: 1.5px solid rgba(246, 171, 59, 0.3);
+      border-radius: 9px;
+      padding: 10px 13px;
+      font-size: 0.74rem;
+      color: #8a5c10;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .security-notice .notice-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* fp-link-row already in style.css — just in case */
+    .fp-link-row {
+      text-align: right;
+      margin-bottom: 14px;
+    }
+    .fp-link {
+      font-size: 0.78rem;
+      color: #f6ab3b;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .fp-link:hover { color: #e09520; }
+
+    /* register row */
+    .register-row {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #aaa;
+    }
+    .register-link {
+      color: #f6ab3b;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 4px;
+    }
+    .register-link:hover { color: #e09520; }
+
+    /* shake */
+    @keyframes fp-shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-7px); }
+      40%      { transform: translateX(7px); }
+      60%      { transform: translateX(-5px); }
+      80%      { transform: translateX(5px); }
+    }
+  </style>
 </head>
 
 <body>
@@ -20,24 +139,36 @@
   </header>
 
   <div class="container">
-    <div class="login-card">
+    <div class="login-card" id="login-card">
 
-      <h2>Login to College Account</h2>
+      <!-- ── Role toggle ── -->
+      <div class="role-toggle">
+        <button class="role-btn active" id="btn-teacher" onclick="switchRole('teacher')">
+          🎓 Teacher
+        </button>
+        <button class="role-btn" id="btn-admin" onclick="switchRole('admin')">
+          🛡️ Admin
+        </button>
+      </div>
+
+      <!-- Dynamic heading -->
+      <h2 id="login-title">Login to College Account</h2>
+
 
       <form class="login-form" onsubmit="return validateLogin();">
 
         <input type="email" id="username" placeholder="Email address" required style="background: #f6f8fb;" />
         <input type="password" id="password" placeholder="Password" required style="background: #f6f8fb;" />
-        
 
         <div class="fp-link-row">
           <a href="forgot-password.html" class="fp-link">Forgot Password?</a>
         </div>
 
-        <button type="submit" class="btn-login" style="margin-top: 0;">Login</button>
+        <button type="submit" class="btn-login" id="login-btn" style="margin-top: 0;">Login</button>
       </form>
 
-      <div class="register-row">
+      <!-- Register row — hidden in admin mode -->
+      <div class="register-row teacher-only">
         Don't have an account?
         <a href="register.html" class="register-link">Register</a>
       </div>
@@ -48,6 +179,38 @@
   <footer>
     <a href="index.html" class="back">← Back to Home</a>
   </footer>
+
+  <script>
+    /* ── Role switcher ── */
+    var currentRole = "teacher";
+
+    function switchRole(role) {
+      currentRole = role;
+      var card      = document.getElementById("login-card");
+      var btnT      = document.getElementById("btn-teacher");
+      var btnA      = document.getElementById("btn-admin");
+      var title     = document.getElementById("login-title");
+      var loginBtn  = document.getElementById("login-btn");
+
+      if (role === "admin") {
+        card.classList.add("admin-mode");
+        btnA.classList.add("active", "admin-active");
+        btnT.classList.remove("active");
+        title.textContent    = "Admin Login";
+        loginBtn.textContent = "Login as Admin";
+      } else {
+        card.classList.remove("admin-mode");
+        btnT.classList.add("active");
+        btnA.classList.remove("active", "admin-active");
+        title.textContent    = "Login to College Account";
+        loginBtn.textContent = "Login";
+      }
+
+      // Clear fields on switch
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+    }
+  </script>
 
   <script type="module" src="scripts/login.js"></script>
 </body>

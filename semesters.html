@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Semester — College Of Engineering Phaltan Notes</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .breadcrumb {
+            text-align: center;
+            padding: 15px 20px;
+            background: #fff;
+            font-size: 0.95rem;
+            color: #666;
+            border-bottom: 1px solid #eee;
+        }
+
+        .breadcrumb a {
+            color: #f6ab3b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            margin: 0 5px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #f6ab3b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a class="teacher-login" href="login.html">Teachers Login</a>
+        <h1>
+            <img src="logo.png" alt="College Logo" class="logo" draggable="false">
+            College Of Engineering Phaltan Notes
+        </h1>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="index.html">Home</a> >
+        <a href="#" onclick="goBack('courses')"><span id="program-name">Program</span></a> >
+        <a href="#" onclick="goBack('years')"><span id="branch-name">Branch</span></a> >
+        <span id="year-name">Year</span>
+    </div>
+
+    <p style="text-align: center; margin-top: 20px;">Select Your Semester</p>
+
+    <div id="loading" class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Loading semesters...</p>
+    </div>
+
+    <div id="error" class="error-message"></div>
+
+    <main class="container" id="semesters-container">
+        <!-- Semesters will be loaded here -->
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-body">
+            <div class="footer-brand">
+                <div class="footer-logo-row">
+                    <img src="logo.png" alt="Logo" class="footer-logo-img">
+                    <div>
+                        <div class="footer-college-name">College of Engineering<br>Phaltan</div>
+                        <span class="footer-college-sub">Est. Maharashtra, India</span>
+                    </div>
+                </div>
+                <p class="footer-tagline">
+                    Empowering students with accessible academic resources. Your one-stop portal for lecture notes
+                    across all
+                    engineering disciplines.
+                </p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Portal</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Teachers Login</a></li>
+                    <li><a href="syllabus.html">Syllabus</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <div class="footer-contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-text">
+                        <strong>Address</strong>
+                        Phaltan, Satara District,<br>Maharashtra – 415523
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <hr>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-copyright">
+                © 2026 <span>College of Engineering Phaltan</span>. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const container = document.getElementById("semesters-container");
+        const loading = document.getElementById("loading");
+        const error = document.getElementById("error");
+        const branchNameEl = document.getElementById("branch-name");
+        const programNameEl = document.getElementById("program-name");
+        const yearNameEl = document.getElementById("year-name");
+
+        // Get params from URL
+        const params = new URLSearchParams(window.location.search);
+        const program = params.get("program") || "degree";
+        const branch = params.get("branch") || "Branch";
+        const year = params.get("year") || "Year";
+
+        programNameEl.textContent = program === "degree" ? "Degree" : "Diploma";
+        branchNameEl.textContent = branch;
+        yearNameEl.textContent = year;
+
+        // Map year to semesters
+        const yearToSemesters = {
+            "Year 1": ["Semester 1", "Semester 2"],
+            "Year 2": ["Semester 3", "Semester 4"],
+            "Year 3": ["Semester 5", "Semester 6"],
+            "Year 4": ["Semester 7", "Semester 8"]
+        };
+
+        window.goBack = function (page) {
+            if (page === "years") {
+                window.location.href = `years.html?program=${program}&branch=${encodeURIComponent(branch)}`;
+            } else if (page === "courses") {
+                window.location.href = `courses.html?program=${program}`;
+            }
+        };
+
+        function loadSemesters() {
+            try {
+                loading.style.display = "block";
+                const semesters = yearToSemesters[year] || [];
+
+                if (semesters.length === 0) {
+                    error.style.display = "block";
+                    error.textContent = "Invalid year selected. Please go back and try again.";
+                    return;
+                }
+
+                loading.style.display = "none";
+                container.innerHTML = "";
+
+                semesters.forEach(semester => {
+                    const card = document.createElement("a");
+                    card.href = `subjects.html?program=${program}&branch=${encodeURIComponent(branch)}&year=${encodeURIComponent(year)}&semester=${encodeURIComponent(semester)}`;
+                    card.className = "card card-link";
+                    card.innerHTML = `<h3>${semester}</h3>`;
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error("Error loading semesters:", err);
+                loading.style.display = "none";
+                error.style.display = "block";
+                error.textContent = "Failed to load semesters. Please try again.";
+            }
+        }
+
+        loadSemesters();
+    </script>
+</body>
+
+</html>
