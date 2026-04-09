@@ -5,25 +5,37 @@ let diplomaDiv = document.getElementById("diploma-main");
 let degreeBtn = document.getElementById("degreeBtn");
 let diplomaBtn = document.getElementById("diplomaBtn");
 
-degreeBtn.addEventListener("click", () => {
-    console.log("Degree clicked");
+// Check if we're on the index page
+if (degreeDiv && diplomaDiv && degreeBtn && diplomaBtn) {
 
-    degreeDiv.style.display = "flex";
-    diplomaDiv.style.display = "none";
+    // Load and display branches for degree
+    async function loadDegreeCourses() {
+        try {
+            const response = await fetch('courses.html');
+            const html = await response.text();
+            // Extract the container from courses page and load data
+            degreeDiv.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading branches...</p></div>';
 
-    degreeBtn.classList.add("active");
-    diplomaBtn.classList.remove("active");
-});
+            // Instead, let's redirect to courses page with program param
+            window.location.href = "courses.html?program=degree";
+        } catch (err) {
+            degreeDiv.innerHTML = '<p style="color:red;text-align:center;">Error loading branches</p>';
+        }
+    }
 
-diplomaBtn.addEventListener("click", () => {
-    console.log("Diploma clicked");
+    // Load and display branches for diploma  
+    async function loadDiplomaCourses() {
+        try {
+            diplomaDiv.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading branches...</p></div>';
+            window.location.href = "courses.html?program=diploma";
+        } catch (err) {
+            diplomaDiv.innerHTML = '<p style="color:red;text-align:center;">Error loading branches</p>';
+        }
+    }
 
-    diplomaDiv.style.display = "flex";
-    degreeDiv.style.display = "none";
-
-    diplomaBtn.classList.add("active");
-    degreeBtn.classList.remove("active");
-});
+    degreeBtn.addEventListener("click", loadDegreeCourses);
+    diplomaBtn.addEventListener("click", loadDiplomaCourses);
+}
 
 
 // footer course Btn
@@ -42,7 +54,7 @@ function showDegreeFooter() {
 }
 
 function showDiplomaFooter() {
-     diploma.style.display = "block";
+    diploma.style.display = "block";
     degree.style.display = "none";
 
     diplomaFooterBtn.classList.add("active");

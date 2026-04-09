@@ -7,26 +7,26 @@ import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/fir
    Data
 ───────────────────────────────────────────── */
 var BRANCHES = {
-  degree: ["Computer Engineering", "Mechanical Engineering", "AI & Data Science", "ENTC Engineering", "Civil Engineering"],
-  diploma: ["Computer Engineering", "Mechanical Engineering", "ENTC Engineering", "Civil Engineering"]
+  degree: [ "Electronics & Communication", "Civil Engineering", "Mechanical Engineering", "Artificial Intelligence"],
+  diploma: ["Computer Science", "Electronics & Communication", "Civil Engineering", "Mechanical Engineering"]
 };
 
 var YEARS = {
-  degree: ["First Year", "Second Year", "Third Year", "Fourth Year"],
-  diploma: ["First Year", "Second Year", "Third Year"]
+  degree: ["Year 1", "Year 2", "Year 3", "Year 4"],
+  diploma: ["Year 1", "Year 2", "Year 3"]
 };
 
 var SEMS = {
-  "First Year": ["Semester 1", "Semester 2"],
-  "Second Year": ["Semester 3", "Semester 4"],
-  "Third Year": ["Semester 5", "Semester 6"],
-  "Fourth Year": ["Semester 7", "Semester 8"]
+  "Year 1": ["Semester 1", "Semester 2"],
+  "Year 2": ["Semester 3", "Semester 4"],
+  "Year 3": ["Semester 5", "Semester 6"],
+  "Year 4": ["Semester 7", "Semester 8"]
 };
 
 var SUBJECTS = {
   degree: {
     "Semester 1": ["Data Structures", "Programming Fundamentals", "Digital Logic Design", "Mathematics I"],
-    "Semester 2": ["Database Management ", "Web Development", "Discrete Mathematics", "Physics"],
+    "Semester 2": ["Database Management", "Web Development", "Discrete Mathematics", "Physics"],
     "Semester 3": ["Data Structures", "Compiler Design", "Computer Networks", "Advanced Algorithms"],
     "Semester 4": ["Software Engineering", "Database Design", "System Design", "Multimedia"],
     "Semester 5": ["Machine Learning", "Cloud Computing", "Cybersecurity", "Big Data"],

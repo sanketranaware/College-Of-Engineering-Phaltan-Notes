@@ -11,7 +11,7 @@ import {
    Data (mirrored from teacher-dashboard.js)
 ───────────────────────────────────────────── */
 var BRANCHES = {
-  degree: ["Computer Engineering", "Mechanical Engineering", "AI & Data Science", "ENTC Engineering", "Civil Engineering"],
+  degree: [ "Mechanical Engineering", "AI & Data Science", "ENTC Engineering", "Civil Engineering"],
   diploma: ["Computer Engineering", "Mechanical Engineering", "ENTC Engineering", "Civil Engineering"]
 };
 
