@@ -356,6 +356,168 @@
     /* ── Tab panel visibility ── */
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
+
+    /* ══════════════════════════════════════════
+       HELP / HOW-TO SECTION — Google Drive
+    ══════════════════════════════════════════ */
+    .help-section {
+      margin-top: 36px;
+    }
+    .help-card {
+      background: var(--card);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* Collapsible header */
+    .help-card-header {
+      background: linear-gradient(135deg, #0f9d58, #34d399);
+      color: white;
+      padding: 18px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: filter 0.2s;
+    }
+    .help-card-header:hover { filter: brightness(1.06); }
+    .help-header-left { display: flex; align-items: center; gap: 12px; }
+    .help-header-left .help-icon { font-size: 1.5rem; }
+    .help-header-left h3 { font-size: 1rem; font-weight: 700; }
+    .help-header-left p  { font-size: 0.78rem; opacity: 0.88; margin-top: 2px; }
+    .help-chevron {
+      font-size: 1.1rem;
+      transition: transform 0.3s ease;
+      opacity: 0.85;
+      flex-shrink: 0;
+    }
+    .help-chevron.open { transform: rotate(180deg); }
+
+    /* Collapsible body */
+    .help-card-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s ease;
+    }
+    .help-card-body.open { max-height: 1200px; }
+    .help-card-inner { padding: 26px; }
+
+    /* Video embed */
+    .help-video-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      margin-bottom: 24px;
+    }
+    .help-video-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .video-caption {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-top: -16px;
+      margin-bottom: 22px;
+    }
+
+    /* Step-by-step instructions */
+    .help-steps-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .help-steps-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f9d58, #34d399);
+      color: white;
+      font-size: 0.8rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(15,157,88,0.3);
+    }
+    .step-content { flex: 1; padding-top: 4px; }
+    .step-content strong {
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--text);
+      display: block; margin-bottom: 2px;
+    }
+    .step-content span {
+      font-size: 0.81rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+    .step-content code {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 0.78rem;
+      font-family: monospace;
+      color: #1c1c1e;
+    }
+
+    /* Warning note */
+    .help-warning {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.81rem;
+      color: #78350f;
+      line-height: 1.5;
+    }
+    .help-warning .warn-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* Quick tip strip */
+    .help-tip {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.81rem;
+      color: #14532d;
+      line-height: 1.5;
+    }
+    .help-tip .tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
   </style>
 </head>
 
@@ -565,6 +727,117 @@
     <div class="spinner-row"><span class="inline-spinner"></span> Loading your uploads…</div>
   </div>
 
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════
+       HOW TO SHARE GOOGLE DRIVE LINK
+  ══════════════════════════════════ -->
+  <div class="help-section">
+    <div class="help-card">
+
+      <!-- Clickable header -->
+      <div class="help-card-header" onclick="toggleHelp()" id="help-header">
+        <div class="help-header-left">
+          <span class="help-icon">🔗</span>
+          <div>
+            <h3>How to Share a Google Drive Link Publicly</h3>
+            <p>Watch the video guide &amp; follow the steps below</p>
+          </div>
+        </div>
+        <span class="help-chevron" id="help-chevron">▼</span>
+      </div>
+
+      <!-- Collapsible body -->
+      <div class="help-card-body" id="help-body">
+        <div class="help-card-inner">
+
+          <!-- ── Embedded  video ── -->
+          <div class="help-video-wrap">
+            <video src="drive_video.mp4" controls
+              title="How to share Google Drive link publicly"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+          </video>
+          </div>
+          <p class="video-caption">▶ Video: How to Share a Google Drive File Publicly (Step-by-Step)</p>
+
+          <!-- ── Step-by-step instructions ── -->
+          <div class="help-steps-title">📋 Step-by-Step Instructions</div>
+
+          <div class="steps-list">
+
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <strong>Open Google Drive</strong>
+                <span>Go to <code><a href="https://drive.google.com" target="_blank">drive.google.com</a></code> and sign in with your Google account.</span>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <strong>Locate your file</strong>
+                <span>Find the PDF, document, or file you want to share with students.</span>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <strong>Right-click → Share</strong>
+                <span>Right-click the file and select <code>Share</code>, or click the file once and press the Share button (🔗) in the toolbar.</span>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <strong>Change access to "Anyone with the link"</strong>
+                <span>In the sharing dialog, click <code>Change to anyone with the link</code> under General Access. Make sure the role is set to <code>Viewer</code>.</span>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">5</div>
+              <div class="step-content">
+                <strong>Copy the link</strong>
+                <span>Click <code>Copy link</code> — the shareable URL is now copied to your clipboard.</span>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num">6</div>
+              <div class="step-content">
+                <strong>Paste it in the form above</strong>
+                <span>Paste the copied link into the <code>Google Drive Link</code> field in the upload form and submit.</span>
+              </div>
+            </div>
+
+          </div><!-- /steps-list -->
+
+          <!-- Warning -->
+          <div class="help-warning">
+            <span class="warn-icon">⚠️</span>
+            <div>
+              <strong>Important:</strong> If you skip Step 4 and leave the file as <em>Restricted</em>, students will see a "You need access" error when they try to open the link. Always set access to <strong>Anyone with the link</strong> before uploading.
+            </div>
+          </div>
+
+          <!-- Tip -->
+          <div class="help-tip">
+            <span class="tip-icon">💡</span>
+            <div>
+              <strong>Pro tip:</strong> After copying the link, you can test it by opening a new incognito/private browser window and pasting the URL — if the file opens without signing in, it's correctly set to public.
+            </div>
+          </div>
+
+        </div><!-- /help-card-inner -->
+      </div><!-- /help-card-body -->
+
+    </div><!-- /help-card -->
+  </div><!-- /help-section -->
+
 </div><!-- /dashboard-wrap -->
 
 <!-- ── Confirm Delete Modal ── -->
@@ -584,6 +857,19 @@
 
 <!-- All JS lives in the external module file -->
 <script type="module" src="scripts/teacher-dashboard.js"></script>
+
+<script>
+  /* ── Help section toggle ── */
+  function toggleHelp() {
+    const body    = document.getElementById('help-body');
+    const chevron = document.getElementById('help-chevron');
+    const isOpen  = body.classList.toggle('open');
+    chevron.classList.toggle('open', isOpen);
+  }
+
+  /* Auto-open the help section on first visit (optional) */
+  // toggleHelp();
+</script>
 
 </body>
 </html>
