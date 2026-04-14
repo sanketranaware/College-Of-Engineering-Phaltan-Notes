@@ -144,15 +144,15 @@
       <!-- ── Role toggle ── -->
       <div class="role-toggle">
         <button class="role-btn active" id="btn-teacher" onclick="switchRole('teacher')">
-          🎓 Teacher
+          Teacher
         </button>
         <button class="role-btn" id="btn-admin" onclick="switchRole('admin')">
-          🛡️ Admin
+           Admin
         </button>
       </div>
 
       <!-- Dynamic heading -->
-      <h2 id="login-title">Login to College Account</h2>
+      <h2 id="login-title">Teacher Login</h2>
 
 
       <form class="login-form" onsubmit="return validateLogin();">
@@ -164,7 +164,7 @@
           <a href="forgot-password.html" class="fp-link">Forgot Password?</a>
         </div>
 
-        <button type="submit" class="btn-login" id="login-btn" style="margin-top: 0;">Login</button>
+        <button type="submit" class="btn-login" id="login-btn" style="margin-top: 0;">Login as Teacher</button>
       </form>
 
       <!-- Register row — hidden in admin mode -->
@@ -202,8 +202,8 @@
         card.classList.remove("admin-mode");
         btnT.classList.add("active");
         btnA.classList.remove("active", "admin-active");
-        title.textContent    = "Login to College Account";
-        loginBtn.textContent = "Login";
+        title.textContent    = "Teacher Login";
+        loginBtn.textContent = "Login as Teacher";
       }
 
       // Clear fields on switch

@@ -166,7 +166,9 @@
     </footer>
 
     <script type="module">
-        import { getSubjectsBySemester } from "./scripts/firebase-db.js";
+        import { db } from "./scripts/firebase.js";
+        import { doc, getDoc }
+            from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const container = document.getElementById("subjects-container");
         const loading = document.getElementById("loading");
@@ -178,14 +180,14 @@
 
         // Get params from URL
         const params = new URLSearchParams(window.location.search);
-        const program = params.get("program") || "degree";
-        const branch = params.get("branch") || "Branch";
-        const year = params.get("year") || "Year";
-        const semester = params.get("semester") || "Semester";
+        const program  = params.get("program")  || "degree";
+        const branch   = params.get("branch")   || "Branch";
+        const year     = params.get("year")      || "Year";
+        const semester = params.get("semester")  || "Semester";
 
         programNameEl.textContent = program === "degree" ? "Degree" : "Diploma";
-        branchNameEl.textContent = branch;
-        yearNameEl.textContent = year;
+        branchNameEl.textContent  = branch;
+        yearNameEl.textContent    = year;
         semesterNameEl.textContent = semester;
 
         window.goBack = function (page) {
@@ -202,24 +204,27 @@
             try {
                 loading.style.display = "block";
 
-                const subjects = await getSubjectsBySemester(program, semester);
-                console.log("Subjects loaded for", semester, ":", subjects);
-                const allSubjects = subjects.map(s => ({ name: s, semester: semester }));
+                // Read from new structure: admin_config/data → subjects[program][branch][semester]
+                const snap = await getDoc(doc(db, "admin_config", "data"));
+                const data = snap.exists() ? snap.data() : {};
 
-                if (allSubjects.length === 0) {
+                const subjects =
+                    ((data.subjects || {})[program] || {})[branch]?.[semester] || [];
+
+                if (subjects.length === 0) {
                     error.style.display = "block";
-                    error.textContent = "No subjects available for this semester. Please try again later.";
+                    error.textContent = "No subjects available for this semester yet.";
                     loading.style.display = "none";
                     return;
                 }
 
-                container.innerHTML = allSubjects.map(subj => `
-          <a href="subject-detail.html?program=${program}&branch=${encodeURIComponent(branch)}&year=${encodeURIComponent(year)}&semester=${encodeURIComponent(semester)}&subject=${encodeURIComponent(subj.name)}" class="card card-link">
-            <strong>${subj.name}</strong>
-            <small style="color: #999; display: block; margin-top: 4px;">${subj.semester}</small>
-            <span class="badge">View Notes</span>
-          </a>
-        `).join("");
+                container.innerHTML = subjects.map(name => `
+                    <a href="subject-detail.html?program=${program}&branch=${encodeURIComponent(branch)}&year=${encodeURIComponent(year)}&semester=${encodeURIComponent(semester)}&subject=${encodeURIComponent(name)}" class="card card-link">
+                        <strong>${name}</strong>
+                        <small style="color: #999; display: block; margin-top: 4px;">${semester}</small>
+                        <span class="badge">View Notes</span>
+                    </a>
+                `).join("");
 
             } catch (err) {
                 console.error("Error loading subjects:", err);

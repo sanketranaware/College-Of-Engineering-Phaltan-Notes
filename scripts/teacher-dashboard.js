@@ -1,376 +1,377 @@
-import { auth } from "./firebase.js";
-import { db } from "./firebase.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { auth, db } from "./firebase.js";
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import {
+  doc, getDoc, collection,
+  addDoc, deleteDoc, query, where,
+  getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-/* ─────────────────────────────────────────────
-   Data
-───────────────────────────────────────────── */
-var BRANCHES = {
-  degree: [ "Electronics & Communication", "Civil Engineering", "Mechanical Engineering", "Artificial Intelligence"],
-  diploma: ["Computer Science", "Electronics & Communication", "Civil Engineering", "Mechanical Engineering"]
-};
+// ── State ──────────────────────────────────────────────────────────
+let currentUser   = null;
+let adminConfig   = { branches: {}, subjects: {} };
+let myNotes       = [];
+let mySyllabus    = [];
+let pendingDelete = null; // { id, collection, title }
 
-var YEARS = {
-  degree: ["Year 1", "Year 2", "Year 3", "Year 4"],
-  diploma: ["Year 1", "Year 2", "Year 3"]
-};
-
-var SEMS = {
+const yearToSemesters = {
   "Year 1": ["Semester 1", "Semester 2"],
   "Year 2": ["Semester 3", "Semester 4"],
   "Year 3": ["Semester 5", "Semester 6"],
-  "Year 4": ["Semester 7", "Semester 8"]
+  "Year 4": ["Semester 7", "Semester 8"],
+};
+const diplomaYears = ["Year 1", "Year 2", "Year 3"];
+const degreeYears  = ["Year 1", "Year 2", "Year 3", "Year 4"];
+
+// ── DOM helper ─────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+
+function setOptions(selectEl, options, placeholder) {
+  selectEl.innerHTML =
+    `<option value="">${placeholder}</option>` +
+    options.map(o => `<option value="${o}">${o}</option>`).join("");
+  selectEl.disabled = false;
+}
+
+function resetSelect(selectEl, placeholder) {
+  selectEl.innerHTML = `<option value="">${placeholder}</option>`;
+  selectEl.disabled = true;
+}
+
+function showAlert(successId, errorId, successMsgId, errorMsgId, type, msg) {
+  $(successId).classList.remove("show");
+  $(errorId).classList.remove("show");
+  if (type === "success") {
+    $(successMsgId).textContent = msg;
+    $(successId).classList.add("show");
+  } else {
+    $(errorMsgId).textContent = msg;
+    $(errorId).classList.add("show");
+  }
+  setTimeout(() => {
+    $(successId).classList.remove("show");
+    $(errorId).classList.remove("show");
+  }, 5000);
+}
+
+function showNoteAlert(type, msg) {
+  showAlert("alert-success","alert-error","alert-success-msg","alert-error-msg", type, msg);
+}
+function showSylAlert(type, msg) {
+  showAlert("syl-alert-success","syl-alert-error","syl-alert-success-msg","syl-alert-error-msg", type, msg);
+}
+
+// ── Tab switcher ───────────────────────────────────────────────────
+window.switchUploadTab = function(tab) {
+  $("tab-notes").classList.toggle("active", tab === "notes");
+  $("tab-syllabus").classList.toggle("active", tab === "syllabus");
+  $("panel-notes").classList.toggle("active", tab === "notes");
+  $("panel-syllabus").classList.toggle("active", tab === "syllabus");
 };
 
-var SUBJECTS = {
-  degree: {
-    "Semester 1": ["Data Structures", "Programming Fundamentals", "Digital Logic Design", "Mathematics I"],
-    "Semester 2": ["Database Management", "Web Development", "Discrete Mathematics", "Physics"],
-    "Semester 3": ["Data Structures", "Compiler Design", "Computer Networks", "Advanced Algorithms"],
-    "Semester 4": ["Software Engineering", "Database Design", "System Design", "Multimedia"],
-    "Semester 5": ["Machine Learning", "Cloud Computing", "Cybersecurity", "Big Data"],
-    "Semester 6": ["Artificial Intelligence", "Mobile Development", "IoT", "Advanced Networking"],
-    "Semester 7": ["Distributed Systems", "DevOps", "Advanced Security", "Blockchain"],
-    "Semester 8": ["Project Management", "Enterprise Solutions", "Advanced ML", "Microservices"]
-  },
-  diploma: {
-    "Semester 1": ["Fundamentals of Programming", "Computer Fundamentals", "Basic Electronics", "Mathematics Basics"],
-    "Semester 2": ["Database Fundamentals", "HTML & CSS", "Basic Algorithms", "Applied Physics"],
-    "Semester 3": ["Operating System Concepts", "Software Development", "Networking Basics", "Advanced Programming"],
-    "Semester 4": ["Project Development", "Database Programming", "Web Technologies", "Professional Skills"]
+// ── Load admin config from Firestore ──────────────────────────────
+async function loadAdminConfig() {
+  $("loading-strip").style.display = "flex";
+  try {
+    const snap = await getDoc(doc(db, "admin_config", "data"));
+    if (snap.exists()) {
+      const data = snap.data();
+      adminConfig.branches = data.branches || {};
+      adminConfig.subjects  = data.subjects  || {};
+    }
+  } catch (e) {
+    console.warn("Could not load admin config:", e.message);
+  } finally {
+    $("loading-strip").style.display = "none";
   }
-};
+}
 
-/* ─────────────────────────────────────────────
-   Auth guard
-───────────────────────────────────────────── */
-onAuthStateChanged(auth, function (user) {
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
-  var name = user.displayName || user.email.split("@")[0];
-  name = name.charAt(0).toUpperCase() + name.slice(1);
-  var sub = document.getElementById("welcome-sub");
-  if (sub) sub.textContent = "Welcome back, " + name + " — fill in the details below";
-});
-
-/* ─────────────────────────────────────────────
-   Wire all event listeners after DOM is ready
-───────────────────────────────────────────── */
-document.addEventListener("DOMContentLoaded", function () {
-
-  /* Logout button */
-  var logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async function () {
-      await signOut(auth);
-      window.location.href = "login.html";
-    });
-  }
-
-  /* Upload another button */
-  var anotherBtn = document.getElementById("upload-another-btn");
-  if (anotherBtn) {
-    anotherBtn.addEventListener("click", resetForm);
-  }
-
-  /* Program dropdown → populate branches + years */
-  var programSel = document.getElementById("f-program");
-  if (programSel) {
-    programSel.addEventListener("change", updateBranches);
-  }
-
-  /* Year dropdown → populate semesters */
-  var yearSel = document.getElementById("f-year");
-  if (yearSel) {
-    yearSel.addEventListener("change", updateSems);
-  }
-
-  /* Semester dropdown → populate subjects */
-  var semSel = document.getElementById("f-sem");
-  if (semSel) {
-    semSel.addEventListener("change", updateSubjects);
-  }
-
-  /* Drive link live validation */
-  var linkInput = document.getElementById("f-drivelink");
-  if (linkInput) {
-    linkInput.addEventListener("input", function () {
-      validateDriveLink(this.value);
-    });
-  }
-
-  /* Live clear errors on selects */
-  ["program", "branch", "year", "sem", "subject", "unit"].forEach(function (id) {
-    var el = document.getElementById("f-" + id);
-    if (el) el.addEventListener("change", function () { clearErr(id); });
-  });
-
-  /* Live clear errors on text inputs */
-  ["subject", "unitname"].forEach(function (id) {
-    var el = document.getElementById("f-" + id);
-    if (el) el.addEventListener("input", function () { clearErr(id); });
-  });
-
-  /* Form submit — the main handler */
-  var form = document.getElementById("upload-form");
-  if (form) {
-    form.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      console.log("Form submitted");
-
-      if (!validateForm()) {
-        console.log("Validation failed");
-        return;
-      }
-
-      var user = auth.currentUser;
-      if (!user) {
-        console.log("No user logged in — redirecting");
-        window.location.href = "login.html";
-        return;
-      }
-
-      // Collect values
-      var program = document.getElementById("f-program").value;
-      var branch = document.getElementById("f-branch").value;
-      var year = document.getElementById("f-year").value;
-      var sem = document.getElementById("f-sem").value;
-      var subject = document.getElementById("f-subject").value;
-      var unitNum = document.getElementById("f-unit").value;
-      var unitName = document.getElementById("f-unitname").value.trim();
-      var driveLink = document.getElementById("f-drivelink").value.trim();
-
-      console.log("Saving:", program, branch, year, sem, subject, unitNum, unitName, driveLink);
-
-      // Loading state
-      var btn = document.getElementById("up-submit");
-      var spinner = document.getElementById("up-spinner");
-      var btnText = document.getElementById("up-btn-text");
-      btn.disabled = true;
-      btn.classList.add("loading");
-      spinner.style.display = "block";
-      btnText.textContent = "Saving…";
-
-      try {
-        var docRef = await addDoc(collection(db, "notes"), {
-          program: program,
-          branch: branch,
-          year: year,
-          semester: sem,
-          subject: subject,
-          unitNumber: parseInt(unitNum),
-          unitName: unitName,
-          driveLink: driveLink,
-          uploadedBy: user.email,
-          uploadedAt: serverTimestamp()
-        });
-
-        console.log("Saved successfully, doc ID:", docRef.id);
-
-        // Reset button
-        btn.disabled = false;
-        btn.classList.remove("loading");
-        spinner.style.display = "none";
-        btnText.textContent = "Save Notes";
-
-        // Show success screen
-        document.getElementById("upload-form").style.display = "none";
-        document.getElementById("up-success").classList.add("visible");
-
-      } catch (error) {
-        console.error("Firestore error:", error.code, error.message);
-
-        btn.disabled = false;
-        btn.classList.remove("loading");
-        spinner.style.display = "none";
-        btnText.textContent = "Save Notes";
-
-        alert("Failed to save notes.\n\nError: " + error.message + "\n\nCheck the console for details.");
-      }
-    });
-  }
-});
-
-/* ─────────────────────────────────────────────
-   Cascading dropdowns
-───────────────────────────────────────────── */
-function updateBranches() {
-  var prog = document.getElementById("f-program").value;
-  var bSelect = document.getElementById("f-branch");
-  var ySelect = document.getElementById("f-year");
-  var sSelect = document.getElementById("f-sem");
-  var subjSelect = document.getElementById("f-subject");
-
-  bSelect.innerHTML = '<option value="">Select Branch</option>';
-  ySelect.innerHTML = '<option value="">Select Year</option>';
-  sSelect.innerHTML = '<option value="">Select Semester</option>';
-  subjSelect.innerHTML = '<option value="">Select Subject</option>';
-  bSelect.disabled = true;
-  ySelect.disabled = true;
-  sSelect.disabled = true;
-  subjSelect.disabled = true;
-
+// ── Notes cascade selects ──────────────────────────────────────────
+window.onProgramChange = function() {
+  const prog = $("f-program").value;
+  resetSelect($("f-branch"),   "— Select Branch —");
+  resetSelect($("f-year"),     "— Select Year —");
+  resetSelect($("f-semester"), "— Select Year first —");
+  resetSelect($("f-subject"),  "— Select Semester first —");
   if (!prog) return;
+  const branches = adminConfig.branches[prog] || [];
+  branches.length
+    ? setOptions($("f-branch"), branches, "— Select Branch —")
+    : resetSelect($("f-branch"), "No branches found");
+  const years = prog === "degree" ? degreeYears : diplomaYears;
+  setOptions($("f-year"), years, "— Select Year —");
+};
 
-  BRANCHES[prog].forEach(function (b) {
-    var opt = document.createElement("option");
-    opt.value = b; opt.textContent = b;
-    bSelect.appendChild(opt);
-  });
-  bSelect.disabled = false;
+window.onBranchChange = function() {
+  resetSelect($("f-semester"), "— Select Year first —");
+  resetSelect($("f-subject"),  "— Select Semester first —");
+  const year = $("f-year").value;
+  if (year) setOptions($("f-semester"), yearToSemesters[year] || [], "— Select Semester —");
+};
 
-  YEARS[prog].forEach(function (y) {
-    var opt = document.createElement("option");
-    opt.value = y; opt.textContent = y;
-    ySelect.appendChild(opt);
-  });
-  ySelect.disabled = false;
-
-  clearErr("program");
-}
-
-function updateSems() {
-  var year = document.getElementById("f-year").value;
-  var sSelect = document.getElementById("f-sem");
-  var subjSelect = document.getElementById("f-subject");
-
-  sSelect.innerHTML = '<option value="">Select Semester</option>';
-  sSelect.disabled = true;
-  subjSelect.innerHTML = '<option value="">Select Subject</option>';
-  subjSelect.disabled = true;
-
+window.onYearChange = function() {
+  const year = $("f-year").value;
+  resetSelect($("f-semester"), "— Select Year first —");
+  resetSelect($("f-subject"),  "— Select Semester first —");
   if (!year) return;
+  setOptions($("f-semester"), yearToSemesters[year] || [], "— Select Semester —");
+};
 
-  SEMS[year].forEach(function (s) {
-    var opt = document.createElement("option");
-    opt.value = s; opt.textContent = s;
-    sSelect.appendChild(opt);
-  });
-  sSelect.disabled = false;
-  clearErr("year");
-}
+window.onSemesterChange = function() {
+  const prog   = $("f-program").value;
+  const branch = $("f-branch").value;
+  const sem    = $("f-semester").value;
+  resetSelect($("f-subject"), "— Select Semester first —");
+  if (!prog || !branch || !sem) return;
+  const subjects = ((adminConfig.subjects[prog] || {})[branch] || {})[sem] || [];
+  subjects.length
+    ? setOptions($("f-subject"), subjects, "— Select Subject —")
+    : resetSelect($("f-subject"), "No subjects for this branch/semester");
+};
 
-function updateSubjects() {
-  var program = document.getElementById("f-program").value;
-  var sem = document.getElementById("f-sem").value;
-  var subjSelect = document.getElementById("f-subject");
+// ── Syllabus cascade selects ───────────────────────────────────────
+window.onSylProgramChange = function() {
+  const prog = $("sf-program").value;
+  resetSelect($("sf-branch"),   "— Select Branch —");
+  resetSelect($("sf-year"),     "— Select Year —");
+  resetSelect($("sf-semester"), "— Select Year first —");
+  if (!prog) return;
+  const branches = adminConfig.branches[prog] || [];
+  branches.length
+    ? setOptions($("sf-branch"), branches, "— Select Branch —")
+    : resetSelect($("sf-branch"), "No branches found");
+  const years = prog === "degree" ? degreeYears : diplomaYears;
+  setOptions($("sf-year"), years, "— Select Year —");
+};
 
-  subjSelect.innerHTML = '<option value="">Select Subject</option>';
-  subjSelect.disabled = true;
+window.onSylYearChange = function() {
+  const year = $("sf-year").value;
+  resetSelect($("sf-semester"), "— Select Year first —");
+  if (!year) return;
+  setOptions($("sf-semester"), yearToSemesters[year] || [], "— Select Semester —");
+};
 
-  if (!sem || !program) return;
+// ── Submit note ────────────────────────────────────────────────────
+window.submitNote = async function() {
+  const program   = $("f-program").value;
+  const branch    = $("f-branch").value;
+  const year      = $("f-year").value;
+  const semester  = $("f-semester").value;
+  const subject   = $("f-subject").value;
+  const unitNum   = $("f-unit-num").value.trim();
+  const unitName  = $("f-unit-name").value.trim();
+  const title     = $("f-title").value.trim();
+  const driveLink = $("f-drive").value.trim();
 
-  var subjectList = SUBJECTS[program] && SUBJECTS[program][sem] ? SUBJECTS[program][sem] : [];
-
-  subjectList.forEach(function (subj) {
-    var opt = document.createElement("option");
-    opt.value = subj; opt.textContent = subj;
-    subjSelect.appendChild(opt);
-  });
-  subjSelect.disabled = false;
-  clearErr("sem");
-}
-
-/* ─────────────────────────────────────────────
-   Drive link validation
-───────────────────────────────────────────── */
-function isDriveLink(url) {
-  return /https:\/\/drive\.google\.com\/(file\/d\/|drive\/|open\?id=|uc\?)/.test(url);
-}
-
-function validateDriveLink(val) {
-  var icon = document.getElementById("link-icon");
-  var preview = document.getElementById("link-preview");
-  var previewUrl = document.getElementById("link-preview-url");
-
-  clearErr("drivelink");
-
-  if (!val) {
-    icon.className = "link-verify-icon";
-    preview.classList.remove("show");
+  if (!program || !branch || !year || !semester || !subject || !unitNum || !unitName || !title || !driveLink) {
+    showNoteAlert("error", "Please fill in all fields before uploading.");
+    return;
+  }
+  if (!driveLink.startsWith("http")) {
+    showNoteAlert("error", "Please enter a valid Google Drive link starting with https://");
     return;
   }
 
-  if (isDriveLink(val)) {
-    icon.className = "link-verify-icon show valid";
-    icon.textContent = "✓";
-    preview.classList.add("show");
-    previewUrl.href = val;
-    previewUrl.textContent = val.length > 60 ? val.substring(0, 60) + "…" : val;
-  } else {
-    icon.className = "link-verify-icon show invalid";
-    icon.textContent = "✕";
-    preview.classList.remove("show");
+  const btn = $("submit-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="inline-spinner"></span> Uploading…';
+
+  try {
+    await addDoc(collection(db, "notes"), {
+      program, branch, year, semester, subject,
+      unitNumber: parseInt(unitNum),
+      unitName, title, driveLink,
+      uploadedBy: currentUser.email,
+      uploadedAt: serverTimestamp()
+    });
+    showNoteAlert("success", `Note "${title}" uploaded successfully!`);
+    $("f-unit-num").value  = "";
+    $("f-unit-name").value = "";
+    $("f-title").value     = "";
+    $("f-drive").value     = "";
+    await loadAllMyUploads();
+  } catch (e) {
+    showNoteAlert("error", "Upload failed: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "📤 Upload Note";
+  }
+};
+
+// ── Submit syllabus ────────────────────────────────────────────────
+window.submitSyllabus = async function() {
+  const program   = $("sf-program").value;
+  const branch    = $("sf-branch").value;
+  const year      = $("sf-year").value;
+  const semester  = $("sf-semester").value;
+  const title     = $("sf-title").value.trim();
+  const driveLink = $("sf-drive").value.trim();
+
+  if (!program || !branch || !year || !semester || !title || !driveLink) {
+    showSylAlert("error", "Please fill in all fields before uploading.");
+    return;
+  }
+  if (!driveLink.startsWith("http")) {
+    showSylAlert("error", "Please enter a valid link starting with https://");
+    return;
+  }
+
+  const btn = $("syl-submit-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="inline-spinner"></span> Uploading…';
+
+  try {
+    await addDoc(collection(db, "syllabus"), {
+      program, branch, year, semester, title, driveLink,
+      uploadedBy: currentUser.email,
+      uploadedAt: serverTimestamp()
+    });
+    showSylAlert("success", `Syllabus "${title}" uploaded successfully!`);
+    $("sf-title").value = "";
+    $("sf-drive").value = "";
+    await loadAllMyUploads();
+  } catch (e) {
+    showSylAlert("error", "Upload failed: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "📋 Upload Syllabus";
+  }
+};
+
+// ── Load all uploads (notes + syllabus) ───────────────────────────
+async function loadAllMyUploads() {
+  const listEl = $("my-uploads-list");
+  listEl.innerHTML = `<div class="spinner-row"><span class="inline-spinner"></span> Loading your uploads…</div>`;
+  try {
+    // Query only by uploadedBy — no orderBy to avoid needing a composite index
+    const [notesSnap, sylSnap] = await Promise.all([
+      getDocs(query(
+        collection(db, "notes"),
+        where("uploadedBy", "==", currentUser.email)
+      )),
+      getDocs(query(
+        collection(db, "syllabus"),
+        where("uploadedBy", "==", currentUser.email)
+      ))
+    ]);
+
+    myNotes    = notesSnap.docs.map(d => ({ id: d.id, _col: "notes",    ...d.data() }));
+    mySyllabus = sylSnap.docs.map(d  => ({ id: d.id, _col: "syllabus", ...d.data() }));
+
+    renderAllUploads();
+  } catch (e) {
+    console.error("Load uploads error:", e);
+    listEl.innerHTML = `
+      <div class="empty-uploads">
+        <div class="empty-icon">⚠️</div>
+        <strong>Could not load uploads</strong><br>
+        <span style="font-size:0.8rem;color:#ef4444;">${e.message}</span><br><br>
+        <span style="font-size:0.78rem;">Make sure your Firestore rules allow authenticated users
+        to read documents from <code>notes</code> and <code>syllabus</code> collections.</span>
+      </div>`;
   }
 }
 
-/* ─────────────────────────────────────────────
-   Validation helpers
-───────────────────────────────────────────── */
-function showErr(id) {
-  var err = document.getElementById("err-" + id);
-  var field = document.getElementById("f-" + id);
-  if (err) err.classList.add("visible");
-  if (field) field.classList.add("error");
-}
+function renderAllUploads() {
+  const listEl = $("my-uploads-list");
+  const all    = [...myNotes, ...mySyllabus];
+  $("my-uploads-badge").textContent = all.length;
 
-function clearErr(id) {
-  var err = document.getElementById("err-" + id);
-  var field = document.getElementById("f-" + id);
-  if (err) err.classList.remove("visible");
-  if (field) field.classList.remove("error");
-}
-
-function validateForm() {
-  var valid = true;
-
-  ["program", "branch", "year", "sem", "subject", "unit"].forEach(function (id) {
-    var el = document.getElementById("f-" + id);
-    if (!el || !el.value.trim()) { showErr(id); valid = false; }
-    else clearErr(id);
-  });
-
-  ["unitname"].forEach(function (id) {
-    var el = document.getElementById("f-" + id);
-    if (!el || !el.value.trim()) { showErr(id); valid = false; }
-    else clearErr(id);
-  });
-
-  var link = document.getElementById("f-drivelink").value.trim();
-  if (!link || !isDriveLink(link)) {
-    showErr("drivelink");
-    valid = false;
-  } else {
-    clearErr("drivelink");
+  if (!all.length) {
+    listEl.innerHTML = `
+      <div class="empty-uploads">
+        <div class="empty-icon">📭</div>
+        You haven't uploaded anything yet.
+      </div>`;
+    return;
   }
 
-  return valid;
+  listEl.innerHTML =
+    `<div class="note-list">` +
+    all.map(item => {
+      const isSyl = item._col === "syllabus";
+      const meta  = isSyl
+        ? `${cap(item.program)} · ${item.branch || ""} · ${item.semester || ""}`
+        : `${cap(item.program)} · ${item.branch || ""} · ${item.semester || ""} · ${item.subject || ""} · Unit ${item.unitNumber || ""}`;
+      const safeTitle = (item.title || "Untitled").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      return `
+        <div class="note-item" id="item-${item.id}">
+          <div class="note-item-left">
+            <div class="note-title">${item.title || "Untitled"}</div>
+            <div class="note-meta">${meta}</div>
+          </div>
+          <div class="note-item-actions">
+            <span class="note-type-badge ${isSyl ? "badge-syllabus" : "badge-notes"}">${isSyl ? "Syllabus" : "Note"}</span>
+            ${item.driveLink
+              ? `<a href="${item.driveLink}" target="_blank" rel="noopener" class="note-link-btn">Open ↗</a>`
+              : `<span style="font-size:0.78rem;color:var(--text-sub);">No link</span>`}
+            <button class="note-delete-btn"
+              onclick="openDeleteModal('${item.id}','${item._col}','${safeTitle}')">
+              🗑️ Delete
+            </button>
+          </div>
+        </div>`;
+    }).join("") +
+    `</div>`;
 }
 
-/* ─────────────────────────────────────────────
-   Reset form
-───────────────────────────────────────────── */
-function resetForm() {
-  var form = document.getElementById("upload-form");
-  form.reset();
-  form.style.display = "";
-  document.getElementById("up-success").classList.remove("visible");
-
-  var icon = document.getElementById("link-icon");
-  var preview = document.getElementById("link-preview");
-  if (icon) icon.className = "link-verify-icon";
-  if (preview) preview.classList.remove("show");
-
-  ["program", "branch", "year", "sem", "unit", "subject", "unitname", "drivelink"]
-    .forEach(clearErr);
-
-  var bSelect = document.getElementById("f-branch");
-  var ySelect = document.getElementById("f-year");
-  var sSelect = document.getElementById("f-sem");
-  if (bSelect) { bSelect.innerHTML = '<option value="">Select Branch</option>'; bSelect.disabled = true; }
-  if (ySelect) { ySelect.innerHTML = '<option value="">Select Year</option>'; ySelect.disabled = true; }
-  if (sSelect) { sSelect.innerHTML = '<option value="">Select Semester</option>'; sSelect.disabled = true; }
+function cap(str) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// ── Delete modal ───────────────────────────────────────────────────
+window.openDeleteModal = function(id, col, title) {
+  pendingDelete = { id, col };
+  $("delete-modal-msg").textContent =
+    `Are you sure you want to delete "${title}"? This cannot be undone.`;
+  $("delete-modal").classList.add("show");
+};
+
+window.closeDeleteModal = function() {
+  $("delete-modal").classList.remove("show");
+  pendingDelete = null;
+};
+
+window.confirmDelete = async function() {
+  if (!pendingDelete) return;
+  const { id, col } = pendingDelete;
+  const btn = $("delete-confirm-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="inline-spinner"></span> Deleting…';
+
+  try {
+    await deleteDoc(doc(db, col, id));
+    closeDeleteModal();
+    await loadAllMyUploads();
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = "🗑️ Delete";
+    $("delete-modal-msg").textContent = "Delete failed: " + e.message;
+  }
+};
+
+// ── Logout ─────────────────────────────────────────────────────────
+window.doLogout = async function() {
+  try { await signOut(auth); } catch (_) {}
+  window.location.href = "login.html";
+};
+
+// ── Auth listener ──────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    $("teacher-email-display").textContent = user.email;
+    $("auth-gate").style.display  = "none";
+    $("dashboard").style.display  = "block";
+    await loadAdminConfig();
+    await loadAllMyUploads();
+  } else {
+    currentUser = null;
+    $("auth-gate").style.display  = "flex";
+    $("dashboard").style.display  = "none";
+    $("teacher-email-display").textContent = "";
+  }
+});

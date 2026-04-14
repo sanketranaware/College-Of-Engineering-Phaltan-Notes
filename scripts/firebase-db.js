@@ -1,7 +1,4 @@
-/**
- * Firebase Database Operations - CLEAN VERSION
- * No default data, only Firestore
- */
+
 
 import { auth, db } from "./firebase.js";
 import {

@@ -19,7 +19,6 @@
       --green: #22c55e;
       --green-light: #dcfce7;
       --blue: #3b82f6;
-      --blue-light: #eff6ff;
       --bg: #f6f8fb;
       --card: #ffffff;
       --text: #1c1c1e;
@@ -29,189 +28,82 @@
       --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
     }
 
-    body {
-      font-family: "Poppins", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
+    body { font-family: "Poppins", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    /* ── Header ── */
     header {
-      background: var(--orange);
-      color: white;
-      padding: 0 24px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 12px rgba(246,171,59,0.3);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background: var(--orange); color: white; padding: 0 24px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(246,171,59,0.3); position: sticky; top: 0; z-index: 100;
     }
     .header-left { display: flex; align-items: center; gap: 12px; }
     .header-left img { width: 36px; height: 36px; object-fit: contain; border-radius: 8px; background: white; padding: 3px; }
     .header-title { font-size: 1rem; font-weight: 700; }
     .header-badge {
-      background: rgba(255,255,255,0.25);
-      color: white;
-      font-size: 0.68rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.4);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+      background: rgba(255,255,255,0.25); color: white; font-size: 0.68rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4);
+      letter-spacing: 0.5px; text-transform: uppercase;
     }
     .header-right { display: flex; align-items: center; gap: 12px; }
     .admin-name { font-size: 0.82rem; font-weight: 500; opacity: 0.9; }
     #logout-btn {
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: 1.5px solid rgba(255,255,255,0.4);
-      padding: 7px 16px;
-      border-radius: 8px;
-      font-family: "Poppins", sans-serif;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
+      background: rgba(255,255,255,0.2); color: white; border: 1.5px solid rgba(255,255,255,0.4);
+      padding: 7px 16px; border-radius: 8px; font-family: "Poppins", sans-serif;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
     }
     #logout-btn:hover { background: rgba(255,255,255,0.35); }
 
-    /* ── Layout ── */
-    .dashboard-layout {
-      display: flex;
-      min-height: calc(100vh - 64px);
-    }
+    .dashboard-layout { display: flex; min-height: calc(100vh - 64px); }
 
-    /* ── Sidebar ── */
     .sidebar {
-      width: 220px;
-      background: var(--card);
-      border-right: 1px solid var(--border);
-      padding: 24px 0;
-      flex-shrink: 0;
-      position: sticky;
-      top: 64px;
-      height: calc(100vh - 64px);
-      overflow-y: auto;
+      width: 220px; background: var(--card); border-right: 1px solid var(--border);
+      padding: 24px 0; flex-shrink: 0; position: sticky; top: 64px;
+      height: calc(100vh - 64px); overflow-y: auto;
     }
     .sidebar-section { padding: 0 12px; margin-bottom: 8px; }
     .sidebar-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: var(--text-sub);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 0 8px;
-      margin-bottom: 6px;
+      font-size: 0.65rem; font-weight: 700; color: var(--text-sub);
+      letter-spacing: 1px; text-transform: uppercase; padding: 0 8px; margin-bottom: 6px;
     }
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-sub);
-      transition: all 0.15s;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
+      cursor: pointer; font-size: 0.85rem; font-weight: 500; color: var(--text-sub);
+      transition: all 0.15s; border: none; background: none; width: 100%; text-align: left;
     }
     .nav-item:hover { background: var(--bg); color: var(--text); }
     .nav-item.active { background: var(--orange-light); color: var(--orange-dark); font-weight: 600; }
     .nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
     .nav-count {
-      margin-left: auto;
-      background: var(--orange);
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 10px;
-      min-width: 20px;
-      text-align: center;
+      margin-left: auto; background: var(--orange); color: white; font-size: 0.65rem;
+      font-weight: 700; padding: 2px 7px; border-radius: 10px; min-width: 20px; text-align: center;
     }
 
-    /* ── Main content ── */
-    .main-content {
-      flex: 1;
-      padding: 28px 32px;
-      overflow-y: auto;
-    }
+    .main-content { flex: 1; padding: 28px 32px; overflow-y: auto; }
 
-    /* ── Page header ── */
-    .page-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      gap: 16px;
-    }
+    .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; gap: 16px; }
     .page-title { font-size: 1.4rem; font-weight: 700; color: var(--text); }
     .page-subtitle { font-size: 0.82rem; color: var(--text-sub); margin-top: 2px; }
 
-    /* ── Stat cards ── */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    .stat-card {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 18px 20px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: var(--card); border-radius: 14px; padding: 18px 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
     .stat-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 500; margin-bottom: 6px; }
     .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--text); line-height: 1; }
     .stat-icon { font-size: 1.4rem; margin-bottom: 10px; }
 
-    /* ── Tab views ── */
     .tab-view { display: none; }
     .tab-view.active { display: block; }
 
-    /* ── Card ── */
-    .content-card {
-      background: var(--card);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
+    .content-card { background: var(--card); border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
     .card-header {
-      padding: 18px 22px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+      padding: 18px 22px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
     }
     .card-title { font-size: 0.95rem; font-weight: 700; }
     .card-sub { font-size: 0.78rem; color: var(--text-sub); margin-top: 1px; }
 
-    /* ── Btn ── */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 18px;
-      border-radius: 10px;
-      font-family: "Poppins", sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 10px;
+      font-family: "Poppins", sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      border: none; transition: all 0.2s;
     }
     .btn-primary { background: var(--orange); color: white; }
     .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(246,171,59,0.35); }
@@ -221,137 +113,75 @@
     .btn-ghost:hover { border-color: var(--orange); color: var(--orange-dark); background: var(--orange-light); }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
-    /* ── Add form inline ── */
     .add-form-row {
-      padding: 16px 22px;
-      background: var(--orange-light);
-      border-bottom: 1px solid var(--orange-border);
-      display: none;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: flex-end;
+      padding: 16px 22px; background: var(--orange-light); border-bottom: 1px solid var(--orange-border);
+      display: none; gap: 10px; flex-wrap: wrap; align-items: flex-end;
     }
     .add-form-row.open { display: flex; }
     .add-form-row .field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
     .add-form-row label { font-size: 0.73rem; font-weight: 600; color: var(--orange-dark); }
-    .add-form-row input,
-    .add-form-row select {
-      padding: 9px 12px;
-      border-radius: 9px;
-      border: 1.5px solid var(--orange-border);
-      font-family: "Poppins", sans-serif;
-      font-size: 0.83rem;
-      background: white;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
+    .add-form-row input, .add-form-row select {
+      padding: 9px 12px; border-radius: 9px; border: 1.5px solid var(--orange-border);
+      font-family: "Poppins", sans-serif; font-size: 0.83rem; background: white; color: var(--text);
+      outline: none; transition: border-color 0.2s;
     }
-    .add-form-row input:focus,
-    .add-form-row select:focus { border-color: var(--orange); }
+    .add-form-row input:focus, .add-form-row select:focus { border-color: var(--orange); }
     .add-form-row .form-actions { display: flex; gap: 8px; align-items: flex-end; padding-top: 18px; }
 
-    /* ── Table ── */
     .data-table { width: 100%; border-collapse: collapse; }
     .data-table th {
-      padding: 12px 20px;
-      text-align: left;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-sub);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
+      padding: 12px 20px; text-align: left; font-size: 0.72rem; font-weight: 700; color: var(--text-sub);
+      text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg); border-bottom: 1px solid var(--border);
     }
-    .data-table td {
-      padding: 13px 20px;
-      font-size: 0.83rem;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
-    }
+    .data-table td { padding: 13px 20px; font-size: 0.83rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
     .data-table tr:last-child td { border-bottom: none; }
     .data-table tbody tr { transition: background 0.15s; }
     .data-table tbody tr:hover { background: var(--bg); }
 
-    /* ── Badges ── */
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.71rem;
-      font-weight: 600;
-    }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.71rem; font-weight: 600; }
     .badge-degree { background: #eff6ff; color: #1d4ed8; }
     .badge-diploma { background: #f0fdf4; color: #15803d; }
     .badge-orange { background: var(--orange-light); color: var(--orange-dark); }
 
-    /* ── Empty state ── */
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--text-sub);
-    }
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-sub); }
     .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .empty-title { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
     .empty-sub { font-size: 0.82rem; }
 
-    /* ── Loading ── */
     .loading-row { text-align: center; padding: 36px; color: var(--text-sub); font-size: 0.85rem; }
     .spinner {
-      display: inline-block;
-      width: 18px; height: 18px;
-      border: 2.5px solid var(--border);
-      border-top-color: var(--orange);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      vertical-align: middle;
-      margin-right: 8px;
+      display: inline-block; width: 18px; height: 18px; border: 2.5px solid var(--border);
+      border-top-color: var(--orange); border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 8px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Filter row ── */
     .filter-row {
-      padding: 12px 22px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+      padding: 12px 22px; border-bottom: 1px solid var(--border);
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
     }
     .filter-row select, .filter-row input {
-      padding: 7px 12px;
-      border-radius: 9px;
-      border: 1.5px solid var(--border);
-      font-family: "Poppins", sans-serif;
-      font-size: 0.8rem;
-      background: white;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
+      padding: 7px 12px; border-radius: 9px; border: 1.5px solid var(--border);
+      font-family: "Poppins", sans-serif; font-size: 0.8rem; background: white; color: var(--text);
+      outline: none; transition: border-color 0.2s;
     }
     .filter-row select:focus, .filter-row input:focus { border-color: var(--orange); }
     .filter-row label { font-size: 0.78rem; color: var(--text-sub); font-weight: 500; }
+    .card-filter-select {
+      padding: 7px 12px; border-radius: 9px; border: 1.5px solid var(--border);
+      font-family: "Poppins", sans-serif; font-size: 0.8rem;
+      background: white; color: var(--text); outline: none; transition: border-color 0.2s;
+    }
+    .card-filter-select:focus { border-color: var(--orange); }
 
-    /* ── Delete confirm modal ── */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200;
+      display: none; align-items: center; justify-content: center; padding: 20px;
     }
     .modal-overlay.open { display: flex; }
     .modal-box {
-      background: white;
-      border-radius: 18px;
-      padding: 28px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: var(--shadow-lg);
-      animation: modalIn 0.2s ease;
+      background: white; border-radius: 18px; padding: 28px; max-width: 400px; width: 100%;
+      box-shadow: var(--shadow-lg); animation: modalIn 0.2s ease;
     }
     @keyframes modalIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .modal-icon { font-size: 2rem; margin-bottom: 14px; }
@@ -360,77 +190,44 @@
     .modal-desc strong { color: var(--text); }
     .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
-    /* ── Toast ── */
     #admin-toast {
-      position: fixed;
-      top: 80px;
-      right: 24px;
-      background: white;
-      border-radius: 12px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.84rem;
-      font-weight: 500;
-      box-shadow: var(--shadow-lg);
-      z-index: 300;
-      max-width: 340px;
-      opacity: 0;
-      transform: translateX(20px);
-      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-      pointer-events: none;
+      position: fixed; top: 80px; right: 24px; background: white; border-radius: 12px;
+      padding: 14px 18px; display: flex; align-items: center; gap: 10px; font-size: 0.84rem;
+      font-weight: 500; box-shadow: var(--shadow-lg); z-index: 300; max-width: 340px;
+      opacity: 0; transform: translateX(20px);
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none;
     }
     #admin-toast.show { opacity: 1; transform: translateX(0); }
     #admin-toast.success { border-left: 4px solid var(--green); }
-    #admin-toast.error { border-left: 4px solid var(--red); }
+    #admin-toast.error   { border-left: 4px solid var(--red); }
     #admin-toast .t-icon {
-      width: 28px; height: 28px;
-      border-radius: 7px;
+      width: 28px; height: 28px; border-radius: 7px;
       display: flex; align-items: center; justify-content: center;
       font-size: 0.85rem; font-weight: 700; flex-shrink: 0;
     }
     #admin-toast.success .t-icon { background: var(--green-light); color: var(--green); }
-    #admin-toast.error .t-icon { background: var(--red-light); color: var(--red); }
+    #admin-toast.error   .t-icon { background: var(--red-light);   color: var(--red); }
 
-    /* ── Responsive ── */
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .main-content { padding: 18px 16px; }
       .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .data-table th:nth-child(3),
-      .data-table td:nth-child(3) { display: none; }
     }
 
-    /* ── Notes table drive link ── */
     .drive-link-cell a {
-      color: var(--blue);
-      text-decoration: none;
-      font-size: 0.78rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      color: var(--blue); text-decoration: none; font-size: 0.78rem;
+      display: inline-flex; align-items: center; gap: 4px;
     }
     .drive-link-cell a:hover { text-decoration: underline; }
 
-    /* ── Action buttons in table ── */
     .action-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 6px 10px; border-radius: 7px;
+      font-size: 0.8rem; font-weight: 600; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 5px;
     }
     .action-btn.delete { color: var(--red); }
     .action-btn.delete:hover { background: var(--red-light); }
 
-    /* ── Toggle add btn state ── */
     .btn-add-toggle.open { background: var(--bg); color: var(--text-sub); border: 1.5px solid var(--border); }
   </style>
 </head>
@@ -487,29 +284,11 @@
         </div>
       </div>
       <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-icon">📝</div>
-          <div class="stat-label">Total Notes</div>
-          <div class="stat-value" id="stat-notes">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">🏫</div>
-          <div class="stat-label">Branches</div>
-          <div class="stat-value" id="stat-branches">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📚</div>
-          <div class="stat-label">Subjects</div>
-          <div class="stat-value" id="stat-subjects">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">👩‍🏫</div>
-          <div class="stat-label">Teachers</div>
-          <div class="stat-value" id="stat-teachers">—</div>
-        </div>
+        <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-label">Total Notes</div><div class="stat-value" id="stat-notes">—</div></div>
+        <div class="stat-card"><div class="stat-icon">🏫</div><div class="stat-label">Branches</div><div class="stat-value" id="stat-branches">—</div></div>
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-label">Subjects</div><div class="stat-value" id="stat-subjects">—</div></div>
+        <div class="stat-card"><div class="stat-icon">👩‍🏫</div><div class="stat-label">Teachers</div><div class="stat-value" id="stat-teachers">—</div></div>
       </div>
-
-      <!-- Recent notes -->
       <div class="content-card">
         <div class="card-header">
           <div>
@@ -520,19 +299,8 @@
         </div>
         <div style="overflow-x:auto;">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Branch</th>
-                <th>Semester</th>
-                <th>Unit</th>
-                <th>Uploaded By</th>
-                <th>Link</th>
-              </tr>
-            </thead>
-            <tbody id="recent-notes-body">
-              <tr><td colspan="6" class="loading-row"><span class="spinner"></span>Loading…</td></tr>
-            </tbody>
+            <thead><tr><th>Subject</th><th>Branch</th><th>Semester</th><th>Unit</th><th>Uploaded By</th><th>Link</th></tr></thead>
+            <tbody id="recent-notes-body"><tr><td colspan="6" class="loading-row"><span class="spinner"></span>Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -541,58 +309,31 @@
     <!-- ═══ NOTES TAB ═══ -->
     <div class="tab-view" id="tab-notes">
       <div class="page-header">
-        <div>
-          <div class="page-title">Manage Notes</div>
-          <div class="page-subtitle">View and delete uploaded notes from all teachers.</div>
-        </div>
+        <div><div class="page-title">Manage Notes</div><div class="page-subtitle">View and delete uploaded notes from all teachers.</div></div>
       </div>
       <div class="content-card">
         <div class="card-header">
-          <div>
-            <div class="card-title">All Notes</div>
-            <div class="card-sub" id="notes-count-label">Loading…</div>
-          </div>
+          <div><div class="card-title">All Notes</div><div class="card-sub" id="notes-count-label">Loading…</div></div>
         </div>
-        <!-- Filters -->
         <div class="filter-row">
           <label>Filter:</label>
           <select id="filter-program" onchange="applyNotesFilter()">
-            <option value="">All Programs</option>
-            <option value="degree">Degree</option>
-            <option value="diploma">Diploma</option>
+            <option value="">All Programs</option><option value="degree">Degree</option><option value="diploma">Diploma</option>
           </select>
-          <select id="filter-branch" onchange="applyNotesFilter()">
-            <option value="">All Branches</option>
-          </select>
+          <select id="filter-branch" onchange="applyNotesFilter()"><option value="">All Branches</option></select>
           <select id="filter-sem" onchange="applyNotesFilter()">
             <option value="">All Semesters</option>
-            <option value="Semester 1">Sem 1</option>
-            <option value="Semester 2">Sem 2</option>
-            <option value="Semester 3">Sem 3</option>
-            <option value="Semester 4">Sem 4</option>
-            <option value="Semester 5">Sem 5</option>
-            <option value="Semester 6">Sem 6</option>
-            <option value="Semester 7">Sem 7</option>
-            <option value="Semester 8">Sem 8</option>
+            <option value="Semester 1">Sem 1</option><option value="Semester 2">Sem 2</option>
+            <option value="Semester 3">Sem 3</option><option value="Semester 4">Sem 4</option>
+            <option value="Semester 5">Sem 5</option><option value="Semester 6">Sem 6</option>
+            <option value="Semester 7">Sem 7</option><option value="Semester 8">Sem 8</option>
           </select>
           <input type="text" id="filter-search" placeholder="Search subject / unit…" oninput="applyNotesFilter()" style="min-width:180px;" />
         </div>
         <div style="overflow-x:auto;">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Branch</th>
-                <th>Semester</th>
-                <th>Unit</th>
-                <th>Uploaded By</th>
-                <th>Drive Link</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="notes-table-body">
-              <tr><td colspan="7" class="loading-row"><span class="spinner"></span>Loading…</td></tr>
-            </tbody>
+            <thead><tr><th>Subject</th><th>Branch</th><th>Semester</th><th>Unit</th><th>Uploaded By</th><th>Drive Link</th><th>Action</th></tr></thead>
+            <tbody id="notes-table-body"><tr><td colspan="7" class="loading-row"><span class="spinner"></span>Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -601,24 +342,14 @@
     <!-- ═══ BRANCHES TAB ═══ -->
     <div class="tab-view" id="tab-branches">
       <div class="page-header">
-        <div>
-          <div class="page-title">Manage Branches</div>
-          <div class="page-subtitle">Add or remove branches (Degree &amp; Diploma).</div>
-        </div>
-        <button class="btn btn-primary btn-add-toggle" id="add-branch-toggle" onclick="toggleAddForm('branch')">
-          + Add Branch
-        </button>
+        <div><div class="page-title">Manage Branches</div><div class="page-subtitle">Add or remove branches (Degree &amp; Diploma).</div></div>
+        <button class="btn btn-primary btn-add-toggle" id="add-branch-toggle" onclick="toggleAddForm('branch')">+ Add Branch</button>
       </div>
-
       <div class="content-card">
-        <!-- Add form -->
         <div class="add-form-row" id="add-branch-form">
           <div class="field">
             <label>Program</label>
-            <select id="new-branch-program">
-              <option value="degree">Degree</option>
-              <option value="diploma">Diploma</option>
-            </select>
+            <select id="new-branch-program"><option value="degree">Degree</option><option value="diploma">Diploma</option></select>
           </div>
           <div class="field">
             <label>Branch Name</label>
@@ -629,35 +360,16 @@
             <button class="btn btn-ghost" onclick="toggleAddForm('branch')">Cancel</button>
           </div>
         </div>
-
         <div class="card-header">
-          <div>
-            <div class="card-title">All Branches</div>
-            <div class="card-sub" id="branch-count-label">Loading…</div>
-          </div>
-          <div style="display:flex;gap:8px;">
-            <select id="branch-filter-program" onchange="renderBranchTable()" style="padding:7px 12px;border-radius:9px;border:1.5px solid var(--border);font-family:Poppins,sans-serif;font-size:0.8rem;">
-              <option value="">All Programs</option>
-              <option value="degree">Degree</option>
-              <option value="diploma">Diploma</option>
-            </select>
-          </div>
+          <div><div class="card-title">All Branches</div><div class="card-sub" id="branch-count-label">Loading…</div></div>
+          <select class="card-filter-select" id="branch-filter-program" onchange="renderBranchTable()">
+            <option value="">All Programs</option><option value="degree">Degree</option><option value="diploma">Diploma</option>
+          </select>
         </div>
-
         <div style="overflow-x:auto;">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Branch Name</th>
-                <th>Program</th>
-                <th>Notes Count</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="branch-table-body">
-              <tr><td colspan="5" class="loading-row"><span class="spinner"></span>Loading…</td></tr>
-            </tbody>
+            <thead><tr><th>#</th><th>Branch Name</th><th>Program</th><th>Notes Count</th><th>Action</th></tr></thead>
+            <tbody id="branch-table-body"><tr><td colspan="5" class="loading-row"><span class="spinner"></span>Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -666,88 +378,59 @@
     <!-- ═══ SUBJECTS TAB ═══ -->
     <div class="tab-view" id="tab-subjects">
       <div class="page-header">
-        <div>
-          <div class="page-title">Manage Subjects</div>
-          <div class="page-subtitle">Add or remove subjects per semester.</div>
-        </div>
-        <button class="btn btn-primary btn-add-toggle" id="add-subject-toggle" onclick="toggleAddForm('subject')">
-          + Add Subject
-        </button>
+        <div><div class="page-title">Manage Subjects</div><div class="page-subtitle">Add subjects per Program → Branch → Semester.</div></div>
+        <button class="btn btn-primary btn-add-toggle" id="add-subject-toggle" onclick="subjToggleForm()">+ Add Subject</button>
       </div>
-
       <div class="content-card">
         <!-- Add form -->
         <div class="add-form-row" id="add-subject-form">
           <div class="field">
             <label>Program</label>
-            <select id="new-subj-program">
-              <option value="degree">Degree</option>
-              <option value="diploma">Diploma</option>
+            <select id="new-subj-program" onchange="subjOnProgramChange()">
+              <option value="">— Select —</option><option value="degree">Degree</option><option value="diploma">Diploma</option>
             </select>
           </div>
           <div class="field">
+            <label>Branch</label>
+            <select id="new-subj-branch" disabled><option value="">— Select Program first —</option></select>
+          </div>
+          <div class="field">
             <label>Semester</label>
-            <select id="new-subj-sem">
-              <option value="Semester 1">Semester 1</option>
-              <option value="Semester 2">Semester 2</option>
-              <option value="Semester 3">Semester 3</option>
-              <option value="Semester 4">Semester 4</option>
-              <option value="Semester 5">Semester 5</option>
-              <option value="Semester 6">Semester 6</option>
-              <option value="Semester 7">Semester 7</option>
-              <option value="Semester 8">Semester 8</option>
-            </select>
+            <select id="new-subj-sem" disabled><option value="">— Select Branch first —</option></select>
           </div>
           <div class="field">
             <label>Subject Name</label>
             <input type="text" id="new-subj-name" placeholder="e.g. Computer Networks" />
           </div>
           <div class="form-actions">
-            <button class="btn btn-primary" onclick="addSubject()">Save</button>
-            <button class="btn btn-ghost" onclick="toggleAddForm('subject')">Cancel</button>
+            <button class="btn btn-primary" id="subj-save-btn" onclick="subjAddSubject()">Save</button>
+            <button class="btn btn-ghost" onclick="subjToggleForm()">Cancel</button>
           </div>
         </div>
 
         <div class="card-header">
-          <div>
-            <div class="card-title">All Subjects</div>
-            <div class="card-sub" id="subject-count-label">Loading…</div>
-          </div>
+          <div><div class="card-title">All Subjects</div><div class="card-sub" id="subject-count-label">Loading…</div></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <select id="subj-filter-program" onchange="renderSubjectTable()" style="padding:7px 12px;border-radius:9px;border:1.5px solid var(--border);font-family:Poppins,sans-serif;font-size:0.8rem;">
-              <option value="">All Programs</option>
-              <option value="degree">Degree</option>
-              <option value="diploma">Diploma</option>
+            <select class="card-filter-select" id="subj-filter-program" onchange="subjOnFilterProgramChange()">
+              <option value="">All Programs</option><option value="degree">Degree</option><option value="diploma">Diploma</option>
             </select>
-            <select id="subj-filter-sem" onchange="renderSubjectTable()" style="padding:7px 12px;border-radius:9px;border:1.5px solid var(--border);font-family:Poppins,sans-serif;font-size:0.8rem;">
+            <select class="card-filter-select" id="subj-filter-branch" onchange="subjRenderTable()">
+              <option value="">All Branches</option>
+            </select>
+            <select class="card-filter-select" id="subj-filter-sem" onchange="subjRenderTable()">
               <option value="">All Semesters</option>
-              <option value="Semester 1">Sem 1</option>
-              <option value="Semester 2">Sem 2</option>
-              <option value="Semester 3">Sem 3</option>
-              <option value="Semester 4">Sem 4</option>
-              <option value="Semester 5">Sem 5</option>
-              <option value="Semester 6">Sem 6</option>
-              <option value="Semester 7">Sem 7</option>
-              <option value="Semester 8">Sem 8</option>
+              <option value="Semester 1">Sem 1</option><option value="Semester 2">Sem 2</option>
+              <option value="Semester 3">Sem 3</option><option value="Semester 4">Sem 4</option>
+              <option value="Semester 5">Sem 5</option><option value="Semester 6">Sem 6</option>
+              <option value="Semester 7">Sem 7</option><option value="Semester 8">Sem 8</option>
             </select>
           </div>
         </div>
 
         <div style="overflow-x:auto;">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Subject Name</th>
-                <th>Semester</th>
-                <th>Program</th>
-                <th>Notes Count</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="subject-table-body">
-              <tr><td colspan="6" class="loading-row"><span class="spinner"></span>Loading…</td></tr>
-            </tbody>
+            <thead><tr><th>#</th><th>Subject Name</th><th>Branch</th><th>Semester</th><th>Program</th><th>Action</th></tr></thead>
+            <tbody id="subject-table-body"><tr><td colspan="6" class="loading-row"><span class="spinner"></span>Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -756,7 +439,7 @@
   </main>
 </div>
 
-<!-- ── Delete Confirm Modal ── -->
+<!-- Delete Modal -->
 <div class="modal-overlay" id="delete-modal">
   <div class="modal-box">
     <div class="modal-icon">🗑️</div>
@@ -769,12 +452,14 @@
   </div>
 </div>
 
-<!-- ── Toast ── -->
+<!-- Toast -->
 <div id="admin-toast">
   <div class="t-icon" id="toast-icon"></div>
   <span id="toast-msg"></span>
 </div>
 
+<!-- Single combined module — no inline scripts -->
 <script type="module" src="scripts/Admin-Dashboard.js"></script>
+
 </body>
 </html>
