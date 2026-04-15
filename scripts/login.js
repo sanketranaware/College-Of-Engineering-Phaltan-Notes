@@ -194,7 +194,7 @@ document.querySelector(".btn-login").addEventListener("click", async function (e
 
       showToast("Admin login successful! Redirecting…", "success");
       setTimeout(function () {
-        window.location.href = "admin-dashboard.html";
+        window.location.href = "Admin-Dashboard.html";
       }, 1000);
 
     } else {
