@@ -625,7 +625,7 @@ footer.back:hover { color: #2563eb; text-decoration: underline; }
 
 .footer-bottom-right { display: flex; align-items: center; gap: 12px; }
 
-.footer-bottom-link { font-size: 0.69rem; color: #bbb; text-decoration: none; transition: color var(--transition); }
+.footer-bottom-link { font-size: 0.69rem; ; text-decoration: none; transition: color var(--transition); }
 .footer-bottom-link:hover { color: var(--accent); }
 
 .footer-bottom-sep { width: 1px; height: 11px; background: #e0c08a; opacity: 0.4; }
